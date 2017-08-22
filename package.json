@@ -2,9 +2,9 @@
   "name": "openbci-cyton",
   "version": "1.0.0",
   "description": "The official Node.js SDK for the OpenBCI Cyton with Dongle.",
-  "main": "index.js",
+  "main": "openBCICyton.js",
   "scripts": {
-    "start": "node index",
+    "start": "node openBCICyton.js",
     "test": "semistandard | snazzy && mocha test",
     "test-cov": "istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec && codecov",
     "test-lint": "semistandard | snazzy"

@@ -63,7 +63,7 @@ describe('openbci-sdk', function () {
       return bluebirdChecks.noPendingPromises();
     });
     it('constructs with require', function () {
-      let OpenBCICyton = require('../index').Cyton;
+      let OpenBCICyton = require('../openBCICyton');
       ourBoard = new OpenBCICyton({
         verbose: true
       });
