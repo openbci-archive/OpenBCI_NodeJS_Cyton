@@ -1,0 +1,19 @@
+{
+  "name": "get-streaming",
+  "version": "1.0.0",
+  "description": "Get impedance example",
+  "main": "getStreaming.js",
+  "scripts": {
+    "start": "node impedance.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "get"
+  ],
+  "author": "AJ Keller",
+  "license": "MIT",
+  "dependencies": {
+    "openbci": "^2.0.0",
+    "openbci-utilities": "0.0.9"
+  }
+}
