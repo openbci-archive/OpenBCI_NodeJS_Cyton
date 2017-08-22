@@ -1,3 +1,9 @@
+# 1.0.2
+
+### Chores
+
+* Removed false badges
+
 # 1.0.1
 
 ### Bug Fixes
