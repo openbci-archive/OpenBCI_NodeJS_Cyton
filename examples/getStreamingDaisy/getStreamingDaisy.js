@@ -12,7 +12,7 @@
 const debug = false; // Pretty print any bytes in and out... it's amazing...
 const verbose = true; // Adds verbosity to functions
 
-const Cyton = require('../../index').Cyton;
+const Cyton = require('../../openBCICyton');
 let ourBoard = new Cyton({
   boardType: 'daisy',
   debug: debug,
@@ -38,7 +38,7 @@ ourBoard.autoFindOpenBCIBoard().then(portName => {
           ourBoard.on('sample', (sample) => {
             /** Work with sample */
             for (let i = 0; i < ourBoard.numberOfChannels(); i++) {
-              console.log(`Channel ${(i + 1)}: ${sample.channelData[i].toFixed(8)} Volts.`);
+              console.log(`Channel ${(i + 1)}: ${sample.channelDataCounts[i].toFixed(8)} Volts.`);
               // prints to the console
               //  "Channel 1: 0.00001987 Volts."
               //  "Channel 2: 0.00002255 Volts."

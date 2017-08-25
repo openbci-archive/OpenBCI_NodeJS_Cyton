@@ -1,3 +1,10 @@
+# 1.0.3
+
+### Bug Fixes
+
+* Bumped utilities module to v0.2.1
+* Fixes issue with `getStreamingDaisy.js`
+
 # 1.0.2
 
 ### Chores
