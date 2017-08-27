@@ -1170,20 +1170,6 @@ Cyton.prototype.softReset = function () {
 };
 
 /**
- * @description To get the specified channelSettings register data from printRegisterSettings call
- * @param channelNumber - a number
- * @returns {Promise.<T>|*}
- * @author AJ Keller (@pushtheworldllc)
- */
-// TODO: REDO THIS FUNCTION
-Cyton.prototype.getSettingsForChannel = function (channelNumber) {
-  return k.channelSettingsKeyForChannel(channelNumber).then((newSearchingBuffer) => {
-    // this.searchingBuf = newSearchingBuffer
-    return this.printRegisterSettings();
-  });
-};
-
-/**
  * @description Syncs the internal channel settings object with a cyton, this will take about
  *  over a second because there are delays between the register reads in the firmware.
  * @returns {Promise.<T>|*} Resolved once synced, rejects on error or 2 second timeout
@@ -1335,7 +1321,14 @@ Cyton.prototype.impedanceTestContinuousStart = function () {
     for (let i = 0; i < this.numberOfChannels(); i++) {
       chain = chain
         .then(() => k.getImpedanceSetter(i + 1, false, true))
-        .then((commandsArray) => this.write(commandsArray));
+        .then((commandsArray) => {
+          if (this.usingAtLeastVersionTwoFirmware()) {
+            const buf = Buffer.from(commandsArray.join(''));
+            return this._writeAndDrain(buf);
+          } else {
+            return this.write(commandsArray);
+          }
+        });
     }
     chain.then(resolve, reject);
   });
@@ -1358,7 +1351,14 @@ Cyton.prototype.impedanceTestContinuousStop = function () {
     for (let i = 0; i < this.numberOfChannels(); i++) {
       chain = chain
         .then(() => k.getImpedanceSetter(i + 1, false, false))
-        .then((commandsArray) => this.write(commandsArray));
+        .then((commandsArray) => {
+          if (this.usingAtLeastVersionTwoFirmware()) {
+            const buf = Buffer.from(commandsArray.join(''));
+            return this._writeAndDrain(buf);
+          } else {
+            return this.write(commandsArray);
+          }
+        });
     }
     chain.then(resolve, reject);
   });
@@ -1567,7 +1567,12 @@ Cyton.prototype._impedanceTestSetChannel = function (channelNumber, pInput, nInp
     if (this.options.verbose) console.log('pInput: ' + pInput + ' nInput: ' + nInput);
     // Get impedance settings to send the board
     k.getImpedanceSetter(channelNumber, pInput, nInput).then((commandsArray) => {
-      return this.write(commandsArray);
+      if (this.usingAtLeastVersionTwoFirmware()) {
+        const buf = Buffer.from(commandsArray.join(''));
+        return this._writeAndDrain(buf);
+      } else {
+        return this.write(commandsArray);
+      }
     }).then(() => {
       /**
        * If either pInput or nInput are true then we should start calculating impedance. Setting

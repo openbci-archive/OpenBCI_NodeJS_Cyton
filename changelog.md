@@ -1,3 +1,9 @@
+# 1.0.4
+
+### Bug Fixes
+
+* Fixed lead off command sending for v2 firmware and later.
+
 # 1.0.3
 
 ### Bug Fixes

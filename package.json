@@ -1,6 +1,6 @@
 {
   "name": "openbci-cyton",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "The official Node.js SDK for the OpenBCI Cyton with Dongle.",
   "main": "openBCICyton.js",
   "scripts": {
@@ -19,7 +19,7 @@
     "buffer-equal": "^1.0.0",
     "lodash": "^4.17.4",
     "mathjs": "^3.14.2",
-    "openbci-utilities": "^0.2.1",
+    "openbci-utilities": "^0.2.2",
     "safe-buffer": "^5.1.1",
     "serialport": "4.0.7",
     "sntp": "^2.0.2"
@@ -33,6 +33,11 @@
     "chai-as-promised": "^7.1.1",
     "codecov": "^2.1.0",
     "dirty-chai": "^2.0.1",
+    "eslint-config-semistandard": "^11.0.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-react": "^7.3.0",
+    "eslint-plugin-standard": "^3.0.1",
     "istanbul": "^0.4.4",
     "mocha": "^3.4.2",
     "sandboxed-module": "^2.0.3",
