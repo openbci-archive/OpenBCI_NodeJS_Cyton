@@ -1,5 +1,9 @@
 # 1.0.4
 
+### New Features
+
+* Add function `impedanceSet` which is similar to `channelSet` in that it just sends commands and then forgets about them.
+
 ### Bug Fixes
 
 * Fixed lead off command sending for v2 firmware and later.
