@@ -17,8 +17,8 @@ Python researcher or developer? Check out how easy it is to [get access to the e
 ### Table of Contents:
 ---
 
-1. [TL;DR](#tldr)
-2. [Installation](#install)
+1. [Installation](#install)
+2. [TL;DR](#tldr)
 3. [Cyton (32bit Board)](#cyton)
   1. [About](#about)
   2. [General Overview](#general-overview)
@@ -148,9 +148,11 @@ ourBoard.connect(k.OBCISimulatorPortName) // This will set `simulate` to true
     });
 ```
 
+You can also start the simulator by sending [`.connect(portName)`](#method-connect) with `portName` equal to [`'OpenBCISimulator'`](#constants-obcisimulatorportname).
+
 or if you are using ES6:
 ```js
-import { Cyton } from 'openbci';
+import Cyton from 'openbci-cyton';
 import { Constants } from 'openbci-utilities';
 const ourBoard = new Cyton();
 ourBoard.connect(Constants.OBCISimulatorPortName);
@@ -187,16 +189,16 @@ Sample properties:
 ------------------
 * `startByte` (`Number` should be `0xA0`)
 * `sampleNumber` (a `Number` between 0-255)
-* `channelData` (channel data indexed at 0 filled with floating point `Numbers` in Volts)
-* `accelData` (`Array` with X, Y, Z accelerometer values when new data available)
+* `channelData` (channel data indexed at 0 filled with floating point `Numbers` in Volts) if `sendCounts` is false
+* `channelDataCounts` (channel data indexed at 0 filled with floating point `Numbers` in Volts) if `sendCounts` is true
+* `accelData` (`Array` with X, Y, Z accelerometer values when new data available) if `sendCounts` is false
+* `accelDataCounts` (`Array` with X, Y, Z accelerometer values when new data available) Only present if `sendCounts` is true
 * `auxData` (`Buffer` filled with either 2 bytes (if time synced) or 6 bytes (not time synced))
 * `stopByte` (`Number` should be `0xCx` where x is 0-15 in hex)
 * `boardTime` (`Number` the raw board time)
 * `timeStamp` (`Number` the `boardTime` plus the NTP calculated offset)
 
 The power of this module is in using the sample emitter, to be provided with samples to do with as you wish.
-
-You can also start the simulator by sending [`.connect(portName)`](#method-connect) with `portName` equal to [`'OpenBCISimulator'`](#constants-obcisimulatorportname).
 
 To get a ['sample'](#event-sample) event, you need to:
 -------------------------------------

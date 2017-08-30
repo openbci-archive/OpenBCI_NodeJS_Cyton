@@ -12,7 +12,7 @@
 const debug = false; // Pretty print any bytes in and out... it's amazing...
 const verbose = true; // Adds verbosity to functions
 
-const Cyton = require('../../index').Cyton;
+const Cyton = require('../../openBCICyton');
 let ourBoard = new Cyton({
   debug: debug,
   verbose: verbose

@@ -1345,6 +1345,55 @@ describe('openbci-sdk', function () {
         ourBoard.channelSet(1, true, 24, 'normal', 'taco', true, true).should.be.rejected.and.notify(done);
       });
     });
+    describe('#impedanceSet', function () {
+      this.timeout(6000);
+      let firmwareVersion;
+      before(function (done) {
+        if (!ourBoard.isConnected()) {
+          firmwareVersion = ourBoard.options.simulatorFirmwareVersion;
+          ourBoard.connect(masterPortName)
+            .then((done) => {
+
+            })
+            .catch(err => done(err));
+        } else {
+          done();
+        }
+      });
+      after(() => {
+        ourBoard.options.simulatorFirmwareVersion = firmwareVersion;
+      })
+      it('should call the writeAndDrain function with single string for firmware v2+', function (done) {
+        spy.reset();
+        ourBoard.options.simulatorFirmwareVersion = 'v2';
+        ourBoard.impedanceSet(4, false, true)
+          .then(() => {
+            setTimeout(() => {
+              spy.should.have.been.calledWith(Buffer.from('z401Z'));
+              done();
+            }, 15 * k.OBCIWriteIntervalDelayMSShort);
+          })
+          .catch(err => done(err));
+      });
+      it('should call the writeAndDrain function array of commands 9 times for firmware v1', function (done) {
+        ourBoard.options.simulatorFirmwareVersion = 'v1';
+        setTimeout(() => {
+          spy.reset();
+          ourBoard.impedanceSet(1, true, true)
+            .then(() => {
+              setTimeout(() => {
+                spy.callCount.should.equal(5);
+                done();
+              }, 15 * k.OBCIWriteIntervalDelayMSShort);
+            })
+            .catch(err => done(err));
+        }, 10 * k.OBCIWriteIntervalDelayMSShort); // give some time for writer to finish
+      });
+
+      it('should be rejected', function (done) {
+        ourBoard.impedanceSet(1, true, 'taco').should.be.rejected.and.notify(done);
+      });
+    });
     describe('#syncRegisterSettings', function () {
       this.timeout(6000);
       before(function (done) {
