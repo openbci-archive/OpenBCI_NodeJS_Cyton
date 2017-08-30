@@ -1362,7 +1362,7 @@ describe('openbci-sdk', function () {
       });
       after(() => {
         ourBoard.options.simulatorFirmwareVersion = firmwareVersion;
-      })
+      });
       it('should call the writeAndDrain function with single string for firmware v2+', function (done) {
         spy.reset();
         ourBoard.options.simulatorFirmwareVersion = 'v2';

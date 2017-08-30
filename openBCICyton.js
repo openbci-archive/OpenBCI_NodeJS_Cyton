@@ -1313,7 +1313,6 @@ Cyton.prototype.testSignal = function (signal) {
  * @author AJ Keller (@aj-ptw)
  */
 Cyton.prototype.impedanceSet = function (channelNumber, pInputApplied, nInputApplied) {
-  let arrayOfCommands = [];
   return new Promise((resolve, reject) => {
     k.getImpedanceSetter(channelNumber, pInputApplied, nInputApplied)
       .then((val) => {
