@@ -1305,6 +1305,28 @@ Cyton.prototype.testSignal = function (signal) {
 };
 
 /**
+ * @description To send an impedance setting command to the board
+ * @param channelNumber {Number} (1-16)
+ * @param pInputApplied {Boolean} (true -> ON, false -> OFF (default))
+ * @param nInputApplied {Boolean} (true -> ON, false -> OFF (default))
+ * @returns {Promise} resolves if sent, rejects on bad input or no board
+ * @author AJ Keller (@aj-ptw)
+ */
+Cyton.prototype.impedanceSet = function (channelNumber, pInputApplied, nInputApplied) {
+  return new Promise((resolve, reject) => {
+    k.getImpedanceSetter(channelNumber, pInputApplied, nInputApplied)
+      .then((val) => {
+        if (this.usingAtLeastVersionTwoFirmware()) {
+          const buf = Buffer.from(val.join(''));
+          return this._writeAndDrain(buf);
+        } else {
+          return this.write(val);
+        }
+      }).then(resolve, reject);
+  });
+};
+
+/**
  * @description - Sends command to turn on impedances for all channels and continuously calculate their impedances
  * @returns {Promise} - Fulfills when all the commands are sent to the internal write buffer
  * @author AJ Keller (@pushtheworldllc)
