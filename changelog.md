@@ -1,3 +1,9 @@
+# 1.0.6
+
+### Bug Fixes
+
+* LSL example was not working
+
 # 1.0.4/5
 
 ### New Features
