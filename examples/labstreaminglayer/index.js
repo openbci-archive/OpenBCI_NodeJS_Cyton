@@ -86,7 +86,7 @@ const sampleFunc = sample => {
         action: 'process',
         command: 'sample',
         message: sample
-      }, verbose);
+      }, true);
     }
   }
 };
