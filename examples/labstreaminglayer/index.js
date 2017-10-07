@@ -34,28 +34,33 @@ ourBoard.autoFindOpenBCIBoard().then(portName => {
      * Connect to the board with portName
      * i.e. ourBoard.connect(portName).....
      */
+    ourBoard.connect(portName) // Port name is a serial port name, see `.listPorts()`
+      .then(() => {
+        ourBoard.on('ready', () => {
+          ourBoard.streamStart()
+            .catch((err) => {
+              console.log('fatal err', err);
+              process.exit(0);
+            });
+
+          ourBoard.on('sample', (sample) => {
+            /** Work with sample */
+            for (let i = 0; i < ourBoard.numberOfChannels(); i++) {
+              console.log(`Channel ${(i + 1)}: ${sample.channelData[i].toFixed(8)} Volts.`);
+              // prints to the console
+              //  "Channel 1: 0.00001987 Volts."
+              //  "Channel 2: 0.00002255 Volts."
+              //  ...
+              //  "Channel 8: -0.00001875 Volts."
+            }
+          });
+        });
+      });
     // Call to connect
     ourBoard.connect(portName)
       .then(() => {
 
-        // Get the sample rate after 'ready'
-        numChans = ourBoard.numberOfChannels();
-        if (numChans === 16) {
-          ourBoard.overrideInfoForBoardType('daisy');
-        }
 
-        // Find out if you can even time sync, you must be using v2 and this is only accurate after a `.softReset()` call which is called internally on `.connect()`. We parse the `.softReset()` response for the presence of firmware version 2 properties.
-        timeSyncPossible = ourBoard.usingAtLeastVersionTwoFirmware();
-
-        sendToPython({'numChans': numChans, 'sampleRate': ourBoard.sampleRate()}, verbose);
-        if (timeSyncPossible) {
-          ourBoard.streamStart()
-            .catch(err => {
-              console.log(`stream start: ${err}`);
-            });
-        } else {
-          console.log('not able to time sync');
-        }
       })
       .catch(err => {
         console.log(`connect: ${err}`);
@@ -126,7 +131,14 @@ function exitHandler (options, err) {
   if (err) console.log(err.stack);
   if (options.exit) {
     if (verbose) console.log('exit');
-    ourBoard.disconnect().catch(console.log);
+    ourBoard.disconnect()
+      .then(() => {
+        process.exit(0);
+      })
+      .catch((err) => {
+        process.exit(0);
+        console.log(err);
+      });
   }
 }
 
