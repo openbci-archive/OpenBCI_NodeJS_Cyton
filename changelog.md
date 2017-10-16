@@ -1,3 +1,9 @@
+# 1.0.6
+
+### Bug Fixes
+
+* Daisy samples now get stop bytes with utilities bump to v0.2.7
+
 # 1.0.4/5
 
 ### New Features
