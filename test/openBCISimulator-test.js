@@ -7,9 +7,9 @@ const chaiAsPromised = require(`chai-as-promised`);
 const dirtyChai = require('dirty-chai');
 const expect = chai.expect;
 const should = chai.should(); // eslint-disable-line no-unused-vars
-const OpenBCISimulator = require('../index').Simulator;
-const openBCIUtilities = require('../openBCIUtilities');
-const k = require('../openBCIConstants');
+const OpenBCISimulator = require('../openBCISimulator');
+const openBCIUtilities = require('openbci-utilities').Utilities;
+const k = require('openbci-utilities').Constants;
 const Buffer = require('safe-buffer').Buffer;
 const _ = require('lodash');
 
