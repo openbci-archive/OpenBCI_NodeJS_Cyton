@@ -45,7 +45,7 @@ ourBoard.autoFindOpenBCIBoard().then(portName => {
           }
 
           // Find out if you can even time sync, you must be using v2 and this is only accurate after a `.softReset()` call which is called internally on `.connect()`. We parse the `.softReset()` response for the presence of firmware version 2 properties.
-          timeSyncPossible = ourBoard.usingVersionTwoFirmware();
+          timeSyncPossible = ourBoard.usingAtLeastVersionTwoFirmware();
 
           sendToPython({'numChans': numChans, 'sampleRate': ourBoard.sampleRate()});
           if (timeSyncPossible) {
@@ -82,9 +82,9 @@ const sampleFunc = sample => {
       });
   }
 
-  if (sample.timeStamp) { // true after the first successful sync
-    if (sample.timeStamp < 10 * 60 * 60 * 1000) { // Less than 10 hours
-      console.log(`Bad time sync ${sample.timeStamp}`);
+  if (sample.timestamp) { // true after the first successful sync
+    if (sample.timestamp < 10 * 60 * 60 * 1000) { // Less than 10 hours
+      console.log(`Bad time sync ${sample.timestamp}`);
     } else {
       sendToPython({
         action: 'process',
@@ -127,7 +127,14 @@ function exitHandler (options, err) {
   if (err) console.log(err.stack);
   if (options.exit) {
     if (verbose) console.log('exit');
-    ourBoard.disconnect().catch(console.log);
+    ourBoard.disconnect()
+      .then(() => {
+        process.exit(0);
+      })
+      .catch((err) => {
+        console.log(err);
+        process.exit(0);
+      });
   }
 }
 

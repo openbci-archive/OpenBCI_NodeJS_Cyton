@@ -11,13 +11,13 @@
  *   then `npm start`
  */
 const portPub = 'tcp://127.0.0.1:3004';
-const zmq = require('zmq-prebuilt');
+const zmq = require('zeromq');
 const socket = zmq.socket('pair');
-const simulate = false; // Sends synthetic data
+const simulate = true; // Sends synthetic data
 const debug = false; // Pretty print any bytes in and out... it's amazing...
 const verbose = true; // Adds verbosity to functions
 
-const Cyton = require('openbci').Cyton;
+const Cyton = require('../..');
 let ourBoard = new Cyton({
   simulate: simulate, // Uncomment to see how it works with simulator!
   simulatorFirmwareVersion: 'v2',
@@ -41,7 +41,8 @@ ourBoard.autoFindOpenBCIBoard().then(portName => {
       .then(() => {
         ourBoard.on('ready', () => {
           // Find out if you can even time sync, you must be using v2 and this is only accurate after a `.softReset()` call which is called internally on `.connect()`. We parse the `.softReset()` response for the presence of firmware version 2 properties.
-          timeSyncPossible = ourBoard.usingVersionTwoFirmware();
+          timeSyncPossible = ourBoard.usingAtLeastVersionTwoFirmware();
+          console.log(`timeSyncPossible: ${timeSyncPossible}`);
 
           if (timeSyncPossible) {
             ourBoard.streamStart()
@@ -63,6 +64,8 @@ ourBoard.autoFindOpenBCIBoard().then(portName => {
 });
 
 const sampleFunc = sample => {
+  console.log(JSON.stringify(sample));
+
   if (sample._count % resyncPeriod === 0) {
     ourBoard.syncClocksFull()
       .then(syncObj => {
@@ -77,9 +80,9 @@ const sampleFunc = sample => {
       });
   }
 
-  if (sample.timeStamp) { // true after the first successful sync
-    if (sample.timeStamp < 10 * 60 * 60 * 1000) { // Less than 10 hours
-      console.log(`Bad time sync ${sample.timeStamp}`);
+  if (sample.timestamp) { // true after the first successful sync
+    if (sample.timestamp < 10 * 60 * 60 * 1000) { // Less than 10 hours
+      console.log(`Bad time sync ${sample.timestamp}`);
     } else {
       sendToPython({
         action: 'process',
@@ -178,7 +181,14 @@ function exitHandler (options, err) {
   if (err) console.log(err.stack);
   if (options.exit) {
     if (verbose) console.log('exit');
-    ourBoard.disconnect().catch(console.log);
+    ourBoard.disconnect()
+      .then(() => {
+        process.exit(0);
+      })
+      .catch((err) => {
+        console.log(err);
+        process.exit(0);
+      });
   }
 }
 

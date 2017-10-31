@@ -6,7 +6,7 @@ const OpenBCIUtilities = require('openbci-utilities');
 const obciUtils = OpenBCIUtilities.Utilities;
 const k = OpenBCIUtilities.Constants;
 const obciDebug = OpenBCIUtilities.Debug;
-const OpenBCISimulator = OpenBCIUtilities.Simulator;
+const OpenBCISimulator = require('./openBCISimulator');
 const Sntp = require('sntp');
 const bufferEqual = require('buffer-equal');
 const math = require('mathjs');
@@ -1878,7 +1878,7 @@ Cyton.prototype._processBytes = function (data) {
             this.buffer = obciUtils.stripToEOTBuffer(data);
           }
         } else {
-          if (_.eq(this.getBoardType(), this.options.boardType) && this.options.verbose) {
+          if (!_.eq(this.getBoardType(), this.options.boardType) && this.options.verbose) {
             console.log(`Module detected ${this.getBoardType()} board type but you specified ${this.options.boardType}, use 'hardSet' to force the module to correct itself`);
           }
           this.curParsingMode = k.OBCIParsingNormal;
@@ -2122,6 +2122,7 @@ Cyton.prototype._processPacketTimeSyncSet = function (rawPacket, timeOfPacketArr
       }
 
       this.sync.curSyncObj.timeOffsetMaster = this.sync.timeOffsetMaster;
+      this._rawDataPacketToSample.timeOffset = this.sync.timeOffsetMaster;
 
       if (this.options.verbose) {
         console.log(`Master offset ${this.sync.timeOffsetMaster} ms`);

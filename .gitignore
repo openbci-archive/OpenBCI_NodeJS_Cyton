@@ -43,3 +43,7 @@ hardwareVoltageOutputAll.txt
 
 # Text editor temporary files
 .*.sw* # vi/vim
+
+# For python
+examples/python/dist/*
+examples/python/openbci_node_python.egg-info/*
