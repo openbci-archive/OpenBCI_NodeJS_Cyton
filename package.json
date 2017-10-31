@@ -1,6 +1,6 @@
 {
   "name": "openbci-cyton",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "The official Node.js SDK for the OpenBCI Cyton with Dongle.",
   "main": "openBCICyton.js",
   "scripts": {
