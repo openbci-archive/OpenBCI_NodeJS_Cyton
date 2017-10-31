@@ -16,14 +16,14 @@
   "author": "AJ Keller",
   "license": "MIT",
   "dependencies": {
-    "openbci": "^2.0.0",
-    "zmq-prebuilt": "^2.1.0"
+    "concurrently": "^3.1.0",
+    "zeromq": "^4.6.0"
   },
   "devEngines": {
     "node": "<=6.x",
     "npm": ">=3.x"
   },
   "devDependencies": {
-    "concurrently": "^3.1.0"
+
   }
 }

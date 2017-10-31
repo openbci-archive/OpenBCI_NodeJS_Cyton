@@ -196,7 +196,7 @@ Sample properties:
 * `auxData` (`Buffer` filled with either 2 bytes (if time synced) or 6 bytes (not time synced))
 * `stopByte` (`Number` should be `0xCx` where x is 0-15 in hex)
 * `boardTime` (`Number` the raw board time)
-* `timeStamp` (`Number` the `boardTime` plus the NTP calculated offset)
+* `timestamp` (`Number` the `boardTime` plus the NTP calculated offset)
 
 The power of this module is in using the sample emitter, to be provided with samples to do with as you wish.
 

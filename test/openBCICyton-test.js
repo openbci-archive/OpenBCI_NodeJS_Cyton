@@ -1893,6 +1893,7 @@ describe('openbci-sdk', function () {
       ourBoard.once('synced', obj => {
         expect(obj.timeOffset, 'object timeOffset').to.equal(expectedTimeOffset);
         expect(ourBoard.sync.timeOffsetMaster, 'master time offset').to.equal(expectedTimeOffset);
+        expect(ourBoard._rawDataPacketToSample).to.have.property('timeOffset', expectedTimeOffset);
         done();
       });
       ourBoard._processPacketTimeSyncSet(timeSyncSetPacket, timeSetPacketArrived);

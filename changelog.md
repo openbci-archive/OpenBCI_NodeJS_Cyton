@@ -1,3 +1,12 @@
+# 1.0.7
+
+### Bug Fixes
+
+* Add simulator back into this repo
+* Fixed bug where timestamp was not calculated with timeOffset, big fail.
+* Fixed the `python` example
+* Fixed the `labstreaminglayer` example
+
 # 1.0.6
 
 ### Bug Fixes
