@@ -70,7 +70,7 @@ ourBoard.connect(portName) // Port name is a serial port name, see `.listPorts()
           //  "Channel 1: 0.00001987 Volts."
           //  "Channel 2: 0.00002255 Volts."
           //  ...
-          //  "Channel 8: -0.00001875 Volts."
+          //  "Channel 8: -0.00001056 Volts."
           }
         });
     });
