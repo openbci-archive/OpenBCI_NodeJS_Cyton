@@ -39,7 +39,7 @@ ourBoard.autoFindOpenBCIBoard().then(portName => {
     // Call to connect
     ourBoard.connect(portName)
       .then(() => {
-        ourBoard.on('ready', () => {
+        ourBoard.once('ready', () => {
           // Find out if you can even time sync, you must be using v2 and this is only accurate after a `.softReset()` call which is called internally on `.connect()`. We parse the `.softReset()` response for the presence of firmware version 2 properties.
           timeSyncPossible = ourBoard.usingAtLeastVersionTwoFirmware();
           console.log(`timeSyncPossible: ${timeSyncPossible}`);

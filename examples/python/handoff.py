@@ -98,7 +98,7 @@ def main(argv):
                                 print "sample is not a dict", message
                                 raise ValueError
                             # Get keys of sample
-                            data = np.zeros(9)
+                            data = np.zeros(nb_chan + 1)
 
                             data[:-1] = message.get('channelData')
                             data[-1] = message.get('timeStamp')

@@ -392,7 +392,7 @@ Cyton.prototype.disconnect = function () {
  */
 Cyton.prototype.isConnected = function () {
   if (!this.serial) return false;
-  return this.serial.isOpen();
+  return this.serial.isOpen;
 };
 
 /**
@@ -636,7 +636,7 @@ Cyton.prototype.usingVersionTwoFirmware = function () {
   if (this.options.simulate) {
     return this.options.simulatorFirmwareVersion === k.OBCIFirmwareV2;
   } else {
-    return this.info.firmware === k.OBCIFirmwareV2;
+    return this.info.firmware.major === 2;
   }
 };
 
@@ -664,7 +664,7 @@ Cyton.prototype.usingVersionThreeFirmware = function () {
   if (this.options.simulate) {
     return this.options.simulatorFirmwareVersion === k.OBCIFirmwareV3;
   } else {
-    return this.info.firmware === k.OBCIFirmwareV3;
+    return this.info.firmware.major === 3;
   }
 };
 
@@ -1953,16 +1953,10 @@ Cyton.prototype._processParseBufferForReset = function (dataBuffer) {
     this.overrideInfoForBoardType(k.OBCIBoardCyton);
   }
 
-  const firmware = obciUtils.getFirmware(dataBuffer);
-  if (firmware) {
-    if (firmware.major === 2) {
-      this.info.firmware = k.OBCIFirmwareV2;
-    } else {
-      this.info.firmware = k.OBCIFirmwareV3;
-    }
+  this.info.firmware = obciUtils.getFirmware(dataBuffer);
+  if (this.info.firmware) {
     this.writeOutDelay = k.OBCIWriteIntervalDelayMSShort;
   } else {
-    this.info.firmware = k.OBCIFirmwareV1;
     this.writeOutDelay = k.OBCIWriteIntervalDelayMSLong;
   }
 };
