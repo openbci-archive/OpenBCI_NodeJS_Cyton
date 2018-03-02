@@ -1,3 +1,10 @@
+# 1.0.8
+
+Bump serial port to 1.0.8
+
+### Bug Fixes
+* Fix `python` example
+
 # 1.0.7
 
 ### Bug Fixes

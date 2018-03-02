@@ -22,7 +22,7 @@
     "openbci-utilities": "^0.2.7",
     "performance-now": "^2.1.0",
     "safe-buffer": "^5.1.1",
-    "serialport": "^6.0.5",
+    "serialport": "^6.1.1",
     "sntp": "^2.0.2"
   },
   "directories": {
