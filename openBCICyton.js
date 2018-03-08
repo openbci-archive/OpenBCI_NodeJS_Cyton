@@ -3,15 +3,13 @@ const EventEmitter = require('events').EventEmitter;
 const util = require('util');
 const SerialPort = require('serialport');
 const OpenBCIUtilities = require('openbci-utilities');
-const obciUtils = OpenBCIUtilities.Utilities;
-const k = OpenBCIUtilities.Constants;
-const obciDebug = OpenBCIUtilities.Debug;
+const obciUtils = require('openbci-utilities/dist/utilities');
+const k = require('openbci-utilities/dist/constants');
+const obciDebug = require('openbci-utilities/dist/debug')
 const OpenBCISimulator = require('./openBCISimulator');
 const Sntp = require('sntp');
 const bufferEqual = require('buffer-equal');
-const math = require('mathjs');
 const _ = require('lodash');
-const Buffer = require('safe-buffer').Buffer;
 
 /**
  * @typedef {Object} InitializationObject Board optional configurations.
@@ -2084,7 +2082,7 @@ Cyton.prototype._processPacketTimeSyncSet = function (rawPacket, timeOfPacketArr
       //     t                                   t confirmation
       if ((this.sync.curSyncObj.timeSyncSetPacket - this.sync.curSyncObj.timeSyncSentConfirmation) < k.OBCITimeSyncThresholdTransFailureMS) {
         // Estimate that 75% of the time between sent and set packet was spent on the packet making its way from board to this point
-        this.sync.curSyncObj.timeTransmission = math.floor((this.sync.curSyncObj.timeSyncSetPacket - this.sync.curSyncObj.timeSyncSent) * k.OBCITimeSyncMultiplierWithSyncConf);
+        this.sync.curSyncObj.timeTransmission = Math.floor((this.sync.curSyncObj.timeSyncSetPacket - this.sync.curSyncObj.timeSyncSent) * k.OBCITimeSyncMultiplierWithSyncConf);
         if (this.options.verbose) console.log(`Had to correct transmission time`);
         this.sync.curSyncObj.correctedTransmissionTime = true;
       }
