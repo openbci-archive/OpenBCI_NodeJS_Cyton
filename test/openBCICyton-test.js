@@ -2576,7 +2576,7 @@ $$$`);
     after(() => bluebirdChecks.noPendingPromises());
     it('should return true if firmware is version 2', () => {
       ourBoard = new Cyton();
-      ourBoard.info.firmware = 'v2';
+      ourBoard.info.firmware.major = 2;
 
       expect(ourBoard.usingVersionTwoFirmware()).to.be.true();
     });
@@ -2591,7 +2591,7 @@ $$$`);
     after(() => bluebirdChecks.noPendingPromises());
     it('should return true if firmware is version 3', () => {
       ourBoard = new Cyton();
-      ourBoard.info.firmware = 'v3';
+      ourBoard.info.firmware.major = 3;
 
       expect(ourBoard.usingVersionThreeFirmware()).to.be.true();
     });

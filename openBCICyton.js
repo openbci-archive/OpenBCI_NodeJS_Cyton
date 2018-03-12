@@ -192,7 +192,12 @@ function Cyton (options) {
   // Objects
   this.impedanceTest = obciUtils.impedanceTestObjDefault();
   this.info = {
-    firmware: k.OBCIFirmwareV1,
+    firmware: {
+      major: 1,
+      minor: 0,
+      patch: 0,
+      raw: 'v1'
+    },
     missedPackets: 0
   };
 
@@ -1843,7 +1848,7 @@ Cyton.prototype._processBytes = function (data) {
   let oldDataBuffer = null;
   if (this.buffer) {
     oldDataBuffer = this.buffer;
-    data = Buffer.concat([this.buffer, data], data.length + this.buffer.length);
+    data = Buffer.from([this.buffer, data]);
   }
 
   switch (this.curParsingMode) {
