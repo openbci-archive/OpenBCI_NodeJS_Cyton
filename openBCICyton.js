@@ -196,7 +196,7 @@ function Cyton (options) {
       major: 1,
       minor: 0,
       patch: 0,
-      raw: 'v1'
+      raw: 'v1.0.0'
     },
     missedPackets: 0
   };
