@@ -2064,7 +2064,12 @@ LIS3DH Device ID: 0x38422$$$`);
 
       ourBoard._processParseBufferForReset(buf);
 
-      ourBoard.info.firmware.should.equal(k.OBCIFirmwareV1);
+      ourBoard.info.firmware.should.deep.equal({
+        major: 1,
+        minor: 0,
+        patch: 0,
+        raw: 'v1.0.0'
+      });
       expect(ourBoard.getBoardType()).to.equal(k.OBCIBoardCyton);
       expect(ourBoard.sampleRate()).to.equal(k.OBCISampleRate250);
       expect(ourBoard.numberOfChannels()).to.equal(k.OBCINumberOfChannelsCyton);
@@ -2078,7 +2083,12 @@ $$$`);
 
       ourBoard._processParseBufferForReset(buf);
 
-      ourBoard.info.firmware.should.equal(k.OBCIFirmwareV1);
+      ourBoard.info.firmware.should.deep.equal({
+        major: 1,
+        minor: 0,
+        patch: 0,
+        raw: 'v1.0.0'
+      });
       expect(ourBoard.getBoardType()).to.equal(k.OBCIBoardDaisy);
       expect(ourBoard.sampleRate()).to.equal(k.OBCISampleRate125);
       expect(ourBoard.numberOfChannels()).to.equal(k.OBCINumberOfChannelsDaisy);
@@ -2087,12 +2097,17 @@ $$$`);
       let buf = new Buffer(`OpenBCI V3 Simulator
 On Board ADS1299 Device ID: 0x12345
 LIS3DH Device ID: 0x38422
-Firmware: v2.0.0
+Firmware: v2.1.3
 $$$`);
 
       ourBoard._processParseBufferForReset(buf);
 
-      ourBoard.info.firmware.should.equal(k.OBCIFirmwareV2);
+      ourBoard.info.firmware.should.deep.equal({
+        major: 2,
+        minor: 1,
+        patch: 3,
+        raw: 'v2.1.3'
+      });
       expect(ourBoard.getBoardType()).to.equal(k.OBCIBoardCyton);
       expect(ourBoard.sampleRate()).to.equal(k.OBCISampleRate250);
       expect(ourBoard.numberOfChannels()).to.equal(k.OBCINumberOfChannelsCyton);
@@ -2106,7 +2121,12 @@ $$$`);
 
       ourBoard._processParseBufferForReset(buf);
 
-      ourBoard.info.firmware.should.equal(k.OBCIFirmwareV3);
+      ourBoard.info.firmware.should.deep.equal({
+        major: 3,
+        minor: 0,
+        patch: 1,
+        raw: 'v3.0.1'
+      });
       expect(ourBoard.getBoardType()).to.equal(k.OBCIBoardCyton);
       expect(ourBoard.sampleRate()).to.equal(k.OBCISampleRate250);
       expect(ourBoard.numberOfChannels()).to.equal(k.OBCINumberOfChannelsCyton);
@@ -2121,7 +2141,12 @@ $$$`);
 
       ourBoard._processParseBufferForReset(buf);
 
-      ourBoard.info.firmware.should.equal(k.OBCIFirmwareV2);
+      ourBoard.info.firmware.should.deep.equal({
+        major: 2,
+        minor: 0,
+        patch: 0,
+        raw: 'v2.0.0'
+      });
       expect(ourBoard.getBoardType()).to.equal(k.OBCIBoardDaisy);
       expect(ourBoard.sampleRate()).to.equal(k.OBCISampleRate125);
       expect(ourBoard.numberOfChannels()).to.equal(k.OBCINumberOfChannelsDaisy);
@@ -2136,7 +2161,12 @@ $$$`);
 
       ourBoard._processParseBufferForReset(buf);
 
-      ourBoard.info.firmware.should.equal(k.OBCIFirmwareV3);
+      ourBoard.info.firmware.should.deep.equal({
+        major: 3,
+        minor: 1,
+        patch: 60,
+        raw: 'v3.1.60'
+      });
       expect(ourBoard.getBoardType()).to.equal(k.OBCIBoardDaisy);
       expect(ourBoard.sampleRate()).to.equal(k.OBCISampleRate125);
       expect(ourBoard.numberOfChannels()).to.equal(k.OBCINumberOfChannelsDaisy);
