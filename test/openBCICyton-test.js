@@ -442,29 +442,27 @@ describe('openbci-sdk', function () {
         simulatorSampleRate: 16,
         simulatorSerialPortFailure: true
       });
-
+      ourBoard.once('ready', () => {
+        let simOptions = ourBoard.serial.options;
+        expect(simOptions).to.be.an('object');
+        expect(simOptions.accel).to.be.false();
+        expect(simOptions.alpha).to.be.false();
+        expect(simOptions.boardFailure).to.be.true();
+        expect(simOptions.daisy).to.be.true();
+        expect(simOptions.daisyCanBeAttached).to.be.false();
+        expect(simOptions.drift).to.be.below(0);
+        expect(simOptions.firmwareVersion).to.be.equal(k.OBCIFirmwareV2);
+        expect(simOptions.fragmentation).to.be.equal(k.OBCISimulatorFragmentationOneByOne);
+        expect(simOptions.latencyTime).to.be.equal(314);
+        expect(simOptions.bufferSize).to.be.equal(2718);
+        expect(simOptions.lineNoise).to.be.equal(k.OBCISimulatorLineNoiseNone);
+        expect(simOptions.sampleRate).to.be.equal(16);
+        expect(simOptions.serialPortFailure).to.be.true();
+        expect(simOptions.verbose).to.be.true();
+        ourBoard.disconnect().then(done).catch(done);
+      });
       ourBoard.connect(k.OBCISimulatorPortName)
-        .then(() => {
-          ourBoard.once('ready', () => {
-            let simOptions = ourBoard.serial.options;
-            expect(simOptions).to.be.an('object');
-            expect(simOptions.accel).to.be.false();
-            expect(simOptions.alpha).to.be.false();
-            expect(simOptions.boardFailure).to.be.true();
-            expect(simOptions.daisy).to.be.true();
-            expect(simOptions.daisyCanBeAttached).to.be.false();
-            expect(simOptions.drift).to.be.below(0);
-            expect(simOptions.firmwareVersion).to.be.equal(k.OBCIFirmwareV2);
-            expect(simOptions.fragmentation).to.be.equal(k.OBCISimulatorFragmentationOneByOne);
-            expect(simOptions.latencyTime).to.be.equal(314);
-            expect(simOptions.bufferSize).to.be.equal(2718);
-            expect(simOptions.lineNoise).to.be.equal(k.OBCISimulatorLineNoiseNone);
-            expect(simOptions.sampleRate).to.be.equal(16);
-            expect(simOptions.serialPortFailure).to.be.true();
-            expect(simOptions.verbose).to.be.true();
-            ourBoard.disconnect().then(done).catch(done);
-          });
-        }).catch(err => done(err));
+        .then().catch(err => done(err));
     });
     it('should be able to set info for cyton board', function (done) {
       ourBoard.simulatorDisable()
@@ -535,11 +533,11 @@ describe('openbci-sdk', function () {
       ourBoard = new Cyton({
         debug: true
       });
-      ourBoard.connect(k.OBCISimulatorPortName).catch(done);
       ourBoard.once('ready', () => {
         sinon.spy(console, 'log');
         done();
       });
+      ourBoard.connect(k.OBCISimulatorPortName).catch(done);
     });
     after(function (done) {
       console.log.restore();
@@ -2606,13 +2604,13 @@ $$$`);
     after(() => bluebirdChecks.noPendingPromises());
     it('should return true if firmware is version 3', () => {
       ourBoard = new Cyton();
-      ourBoard.info.firmware = 'v2';
+      ourBoard.info.firmware.major = 2;
 
       expect(ourBoard.usingAtLeastVersionTwoFirmware()).to.be.true();
     });
     it('should return true if firmware is version 3', () => {
       ourBoard = new Cyton();
-      ourBoard.info.firmware = 'v3';
+      ourBoard.info.firmware.major = 3;
 
       expect(ourBoard.usingAtLeastVersionTwoFirmware()).to.be.true();
     });

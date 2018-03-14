@@ -5,7 +5,7 @@ const SerialPort = require('serialport');
 const OpenBCIUtilities = require('openbci-utilities');
 const obciUtils = require('openbci-utilities/dist/utilities');
 const k = require('openbci-utilities/dist/constants');
-const obciDebug = require('openbci-utilities/dist/debug')
+const obciDebug = OpenBCIUtilities.debug;
 const OpenBCISimulator = require('./openBCISimulator');
 const Sntp = require('sntp');
 const bufferEqual = require('buffer-equal');
@@ -553,7 +553,7 @@ Cyton.prototype.write = function (dataToWrite) {
  * @author AJ Keller (@pushtheworldllc)
  */
 Cyton.prototype._writeAndDrain = function (data) {
-  if (this.options.debug) obciDebug.debugBytes('>>>', data);
+  if (this.options.debug) obciDebug.default('>>>', data);
 
   return new Promise((resolve, reject) => {
     if (!this.isConnected()) return reject(Error('Serial port not open'));
@@ -1842,7 +1842,7 @@ Cyton.prototype.syncClocksFull = function () {
  * @author AJ Keller (@pushtheworldllc)
  */
 Cyton.prototype._processBytes = function (data) {
-  if (this.options.debug) obciDebug.debugBytes(this.curParsingMode + '<<', data);
+  if (this.options.debug) obciDebug.default(this.curParsingMode + '<<', data);
 
   // Concat old buffer
   let oldDataBuffer = null;
