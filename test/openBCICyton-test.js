@@ -2211,13 +2211,13 @@ $$$`);
         // Verify the parse function was not called
         _processParseBufferForResetSpy.should.not.have.been.called();
         // Verify the global buffer has the first buf in it
-        bufferEqual(ourBoard.buffer, buf1);
+        expect(bufferEqual(ourBoard.buffer, buf1)).to.be.true();
         // Send another buffer without EOT
         ourBoard._processBytes(buf2);
         // Verify the parse function was not called
         _processParseBufferForResetSpy.should.not.have.been.called();
         // Verify the global buffer has the first and second buf in it
-        bufferEqual(ourBoard.buffer, Buffer.concat([buf1, buf2]));
+        expect(bufferEqual(ourBoard.buffer, Buffer.concat([buf1, buf2]))).to.be.true();
         // Send another buffer without EOT
         ourBoard._processBytes(buf3);
         // Verify the parse function was called

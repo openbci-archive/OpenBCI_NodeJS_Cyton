@@ -1848,7 +1848,7 @@ Cyton.prototype._processBytes = function (data) {
   let oldDataBuffer = null;
   if (this.buffer) {
     oldDataBuffer = this.buffer;
-    data = Buffer.from([this.buffer, data]);
+    data = Buffer.concat([this.buffer, data]);
   }
 
   switch (this.curParsingMode) {
@@ -1878,7 +1878,7 @@ Cyton.prototype._processBytes = function (data) {
           } else {
             this.curParsingMode = k.OBCIParsingNormal;
             this.emit(k.OBCIEmitterReady);
-            this.buffer = obciUtils.stripToEOTBuffer(data);
+            this.buffer = Buffer.from(obciUtils.stripToEOTBuffer(data));
           }
         } else {
           if (!_.eq(this.getBoardType(), this.options.boardType) && this.options.verbose) {
@@ -1899,11 +1899,11 @@ Cyton.prototype._processBytes = function (data) {
         this.sync.curSyncObj.timeSyncSentConfirmation = this.time();
         this.curParsingMode = k.OBCIParsingNormal;
       }
-      this.buffer = this._processDataBuffer(data);
+      this.buffer = Buffer.from(this._processDataBuffer(data));
       break;
     case k.OBCIParsingNormal:
     default:
-      this.buffer = this._processDataBuffer(data);
+      this.buffer = Buffer.from(this._processDataBuffer(data));
       break;
   }
 
