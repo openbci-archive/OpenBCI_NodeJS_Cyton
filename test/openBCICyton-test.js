@@ -2156,7 +2156,7 @@ $$$`);
 On Board ADS1299 Device ID: 0x12345
 On Daisy ADS1299 Device ID: 0xFFFFF
 LIS3DH Device ID: 0x38422
-Firmware: v3.1.69
+Firmware: v3.1.60
 $$$`);
 
       ourBoard._processParseBufferForReset(buf);

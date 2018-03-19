@@ -1856,7 +1856,7 @@ Cyton.prototype._processBytes = function (data) {
       if (obciUtils.doesBufferHaveEOT(data)) {
         this.curParsingMode = k.OBCIParsingNormal;
         this.emit(k.OBCIEmitterEot, data);
-        this.buffer = obciUtils.stripToEOTBuffer(data);
+        this.buffer = Buffer.from(obciUtils.stripToEOTBuffer(data));
       } else {
         this.buffer = data;
       }
@@ -1878,7 +1878,7 @@ Cyton.prototype._processBytes = function (data) {
           } else {
             this.curParsingMode = k.OBCIParsingNormal;
             this.emit(k.OBCIEmitterReady);
-            this.buffer = Buffer.from(obciUtils.stripToEOTBuffer(data));
+            this.buffer = obciUtils.stripToEOTBuffer(data);
           }
         } else {
           if (!_.eq(this.getBoardType(), this.options.boardType) && this.options.verbose) {
@@ -1899,15 +1899,17 @@ Cyton.prototype._processBytes = function (data) {
         this.sync.curSyncObj.timeSyncSentConfirmation = this.time();
         this.curParsingMode = k.OBCIParsingNormal;
       }
-      this.buffer = Buffer.from(this._processDataBuffer(data));
+      this.buffer = this._processDataBuffer(data);
       break;
     case k.OBCIParsingNormal:
     default:
-      this.buffer = Buffer.from(this._processDataBuffer(data));
+      this.buffer = this._processDataBuffer(data);
       break;
   }
 
   if (this.buffer && oldDataBuffer) {
+    this.buffer = Buffer.from(this.buffer);
+
     if (bufferEqual(this.buffer, oldDataBuffer)) {
       this.buffer = null;
     }
@@ -1960,6 +1962,12 @@ Cyton.prototype._processParseBufferForReset = function (dataBuffer) {
   if (this.info.firmware) {
     this.writeOutDelay = k.OBCIWriteIntervalDelayMSShort;
   } else {
+    this.info.firmware = {
+      major: 1,
+      minor: 0,
+      patch: 0,
+      raw: 'v1.0.0'
+    };
     this.writeOutDelay = k.OBCIWriteIntervalDelayMSLong;
   }
 };
