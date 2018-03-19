@@ -1648,7 +1648,7 @@ describe('openbci-sdk', function () {
       // Ensure that we extracted only one buffer
       _processQualifiedPacketSpy.should.have.been.calledTwice();
       // The buffer should not have anything in it any more
-      bufferEqual(Buffer.concat([extraBuffer, extraBuffer], 2), buffer).should.be.true();
+      expect(bufferEqual(Buffer.concat([extraBuffer, extraBuffer], 2), buffer)).to.be.true();
       buffer.length.should.equal(extraBuffer.length * 2);
     });
   });

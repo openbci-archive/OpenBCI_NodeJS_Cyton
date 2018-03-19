@@ -395,7 +395,7 @@ Cyton.prototype.disconnect = function () {
  */
 Cyton.prototype.isConnected = function () {
   if (!this.serial) return false;
-  return this.serial.isOpen;
+  return this.serial.isOpen();
 };
 
 /**
@@ -1927,19 +1927,29 @@ Cyton.prototype._processDataBuffer = function (dataBuffer) {
   if (_.isNull(dataBuffer) || _.isUndefined(dataBuffer)) return null;
   const output = obciUtils.extractRawDataPackets(dataBuffer);
 
-  dataBuffer = output.buffer;
+  dataBuffer = output.buffer === null ? null : Buffer.from(output.buffer);
 
   this.timeOfPacketArrival = this.time();
 
-  _.forEach(output.rawDataPackets, (rawDataPacket) => {
+  for (let i = 0; i < output.rawDataPackets.length; i++) {
     // Emit that buffer
+    const rawDataPacket = output.rawDataPackets[i];
     this.emit('rawDataPacket', rawDataPacket);
     // Submit the packet for processing
     this._processQualifiedPacket(rawDataPacket);
     this._rawDataPacketToSample.rawDataPacket = rawDataPacket;
     const sample = obciUtils.transformRawDataPacketToSample(this._rawDataPacketToSample);
     this._finalizeNewSample(sample);
-  });
+  }
+  // _.forEach(output.rawDataPackets, (rawDataPacket) => {
+  //   // Emit that buffer
+  //   this.emit('rawDataPacket', rawDataPacket);
+  //   // Submit the packet for processing
+  //   this._processQualifiedPacket(rawDataPacket);
+  //   this._rawDataPacketToSample.rawDataPacket = rawDataPacket;
+  //   const sample = obciUtils.transformRawDataPacketToSample(this._rawDataPacketToSample);
+  //   this._finalizeNewSample(sample);
+  // });
 
   return dataBuffer;
 };
