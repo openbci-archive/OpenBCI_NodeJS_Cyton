@@ -1158,7 +1158,9 @@ describe('openbci-sdk', function () {
       before(function (done) {
         if (!ourBoard.isConnected()) {
           ourBoard.connect(masterPortName)
-            .then(done)
+            .then(() => {
+              done();
+            })
             .catch(done);
         } else {
           done();
