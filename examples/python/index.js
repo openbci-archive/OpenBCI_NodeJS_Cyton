@@ -39,20 +39,18 @@ ourBoard.autoFindOpenBCIBoard().then(portName => {
     // Call to connect
     ourBoard.connect(portName)
       .then(() => {
-        ourBoard.once('ready', () => {
-          // Find out if you can even time sync, you must be using v2 and this is only accurate after a `.softReset()` call which is called internally on `.connect()`. We parse the `.softReset()` response for the presence of firmware version 2 properties.
-          timeSyncPossible = ourBoard.usingAtLeastVersionTwoFirmware();
-          console.log(`timeSyncPossible: ${timeSyncPossible}`);
+        // Find out if you can even time sync, you must be using v2 and this is only accurate after a `.softReset()` call which is called internally on `.connect()`. We parse the `.softReset()` response for the presence of firmware version 2 properties.
+        timeSyncPossible = ourBoard.usingAtLeastVersionTwoFirmware();
+        console.log(`timeSyncPossible: ${timeSyncPossible}`);
 
-          if (timeSyncPossible) {
-            ourBoard.streamStart()
-              .catch(err => {
-                console.log(`stream start: ${err}`);
-              });
-          } else {
-            console.log('not able to time sync');
-          }
-        });
+        if (timeSyncPossible) {
+          ourBoard.streamStart()
+            .catch(err => {
+              console.log(`stream start: ${err}`);
+            });
+        } else {
+          console.log('not able to time sync');
+        }
       })
       .catch(err => {
         console.log(`connect: ${err}`);

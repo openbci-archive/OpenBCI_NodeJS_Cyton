@@ -3,15 +3,13 @@ const EventEmitter = require('events').EventEmitter;
 const util = require('util');
 const SerialPort = require('serialport');
 const OpenBCIUtilities = require('openbci-utilities');
-const obciUtils = OpenBCIUtilities.Utilities;
-const k = OpenBCIUtilities.Constants;
-const obciDebug = OpenBCIUtilities.Debug;
+const obciUtils = require('openbci-utilities/dist/utilities');
+const k = require('openbci-utilities/dist/constants');
+const obciDebug = OpenBCIUtilities.debug;
 const OpenBCISimulator = require('./openBCISimulator');
 const Sntp = require('sntp');
 const bufferEqual = require('buffer-equal');
-const math = require('mathjs');
 const _ = require('lodash');
-const Buffer = require('safe-buffer').Buffer;
 
 /**
  * @typedef {Object} InitializationObject Board optional configurations.
@@ -194,7 +192,12 @@ function Cyton (options) {
   // Objects
   this.impedanceTest = obciUtils.impedanceTestObjDefault();
   this.info = {
-    firmware: k.OBCIFirmwareV1,
+    firmware: {
+      major: 1,
+      minor: 0,
+      patch: 0,
+      raw: 'v1.0.0'
+    },
     missedPackets: 0
   };
 
@@ -255,6 +258,16 @@ Cyton.prototype.connect = function (portName) {
     if (this.isConnected()) return reject(Error('already connected!'));
     this.overrideInfoForBoardType(this.options.boardType);
     this.buffer = null;
+    const readyFunc = () => {
+      resolve();
+      this.removeListener('error', errorFunc);
+    };
+    const errorFunc = (err) => {
+      reject(err);
+      this.removeListener('ready', readyFunc);
+    };
+    this.once('ready', readyFunc);
+    this.once('error', errorFunc);
     /* istanbul ignore else */
     if (this.options.simulate || portName === k.OBCISimulatorPortName) {
       this.options.simulate = true;
@@ -314,7 +327,7 @@ Cyton.prototype.connect = function (portName) {
         // which is C. not implemented yet except in a manner such that replies occur in the write handler,
         // resulting in the EOT arriving before this resolves
         // Fix one or more of the above 3 situations, then move resolve() to the next block.
-        resolve();
+        // resolve();
         return this.softReset();
       }).then(() => {
         if (this.options.verbose) console.log("Waiting for '$$$'");
@@ -392,7 +405,7 @@ Cyton.prototype.disconnect = function () {
  */
 Cyton.prototype.isConnected = function () {
   if (!this.serial) return false;
-  return this.serial.isOpen;
+  return this.serial.isOpen();
 };
 
 /**
@@ -550,7 +563,7 @@ Cyton.prototype.write = function (dataToWrite) {
  * @author AJ Keller (@pushtheworldllc)
  */
 Cyton.prototype._writeAndDrain = function (data) {
-  if (this.options.debug) obciDebug.debugBytes('>>>', data);
+  if (this.options.debug) obciDebug.default('>>>', data);
 
   return new Promise((resolve, reject) => {
     if (!this.isConnected()) return reject(Error('Serial port not open'));
@@ -713,7 +726,7 @@ Cyton.prototype.radioChannelSet = function (channelNumber) {
     this.curParsingMode = k.OBCIParsingEOT;
 
     // Send the radio channel query command
-    this._writeAndDrain(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdChannelSet, channelNumber])).catch(reject);
+    this._writeAndDrain(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdChannelSet, channelNumber])).catch(reject);
   });
 };
 
@@ -763,7 +776,7 @@ Cyton.prototype.radioChannelSetHostOverride = function (channelNumber) {
     this.curParsingMode = k.OBCIParsingEOT;
 
     // Send the radio channel query command
-    this._writeAndDrain(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdChannelSetOverride, channelNumber])).catch(reject);
+    this._writeAndDrain(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdChannelSetOverride, channelNumber])).catch(reject);
   });
 };
 
@@ -813,7 +826,7 @@ Cyton.prototype.radioChannelGet = function () {
     this.curParsingMode = k.OBCIParsingEOT;
 
     // Send the radio channel query command
-    this._writeAndDrain(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdChannelGet])).catch(reject);
+    this._writeAndDrain(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdChannelGet])).catch(reject);
   });
 };
 
@@ -859,7 +872,7 @@ Cyton.prototype.radioPollTimeGet = function () {
     this.curParsingMode = k.OBCIParsingEOT;
 
     // Send the radio channel query command
-    this._writeAndDrain(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdPollTimeGet])).catch(reject);
+    this._writeAndDrain(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdPollTimeGet])).catch(reject);
   });
 };
 
@@ -910,7 +923,7 @@ Cyton.prototype.radioPollTimeSet = function (pollTime) {
     this.curParsingMode = k.OBCIParsingEOT;
 
     // Send the radio channel query command
-    this._writeAndDrain(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdPollTimeSet, pollTime])).catch(reject);
+    this._writeAndDrain(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdPollTimeSet, pollTime])).catch(reject);
   });
 };
 
@@ -949,7 +962,7 @@ Cyton.prototype.radioBaudRateSet = function (speed) {
       // Remove the timeout!
       clearTimeout(badCommsTimeout);
       badCommsTimeout = null;
-      let eotBuf = new Buffer('$$$');
+      let eotBuf = Buffer.from('$$$');
       let newBaudRateBuf;
       for (let i = data.length; i > 3; i--) {
         if (bufferEqual(data.slice(i - 3, i), eotBuf)) {
@@ -982,9 +995,9 @@ Cyton.prototype.radioBaudRateSet = function (speed) {
 
     // Send the radio channel query command
     if (speed === k.OBCIRadioBaudRateFastStr) {
-      this._writeAndDrain(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdBaudRateSetFast])).catch(reject);
+      this._writeAndDrain(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdBaudRateSetFast])).catch(reject);
     } else {
-      this._writeAndDrain(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdBaudRateSetDefault])).catch(reject);
+      this._writeAndDrain(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdBaudRateSetDefault])).catch(reject);
     }
   });
 };
@@ -1032,7 +1045,7 @@ Cyton.prototype.radioSystemStatusGet = function () {
     this.curParsingMode = k.OBCIParsingEOT;
 
     // Send the radio channel query command
-    this._writeAndDrain(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdSystemStatus])).catch(reject);
+    this._writeAndDrain(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdSystemStatus])).catch(reject);
   });
 };
 
@@ -1839,13 +1852,16 @@ Cyton.prototype.syncClocksFull = function () {
  * @author AJ Keller (@pushtheworldllc)
  */
 Cyton.prototype._processBytes = function (data) {
-  if (this.options.debug) obciDebug.debugBytes(this.curParsingMode + '<<', data);
+  if (this.options.debug) obciDebug.default(this.curParsingMode + '<<', data);
 
   // Concat old buffer
   let oldDataBuffer = null;
   if (this.buffer) {
     oldDataBuffer = this.buffer;
-    data = Buffer.concat([this.buffer, data], data.length + this.buffer.length);
+    data = Buffer.concat([
+      Buffer.from(this.buffer),
+      Buffer.from(data)
+    ]);
   }
 
   switch (this.curParsingMode) {
@@ -1854,6 +1870,7 @@ Cyton.prototype._processBytes = function (data) {
         this.curParsingMode = k.OBCIParsingNormal;
         this.emit(k.OBCIEmitterEot, data);
         this.buffer = obciUtils.stripToEOTBuffer(data);
+        if (this.buffer) this.buffer = Buffer.from(this.buffer);
       } else {
         this.buffer = data;
       }
@@ -1867,7 +1884,9 @@ Cyton.prototype._processBytes = function (data) {
             this.emit(k.OBCIEmitterHardSet);
             this.hardSetBoardType(this.options.boardType)
               .then(() => {
+                this.curParsingMode = k.OBCIParsingNormal;
                 this.emit(k.OBCIEmitterReady);
+                this.buffer = obciUtils.stripToEOTBuffer(data);
               })
               .catch((err) => {
                 this.emit(k.OBCIEmitterError, err);
@@ -1905,6 +1924,8 @@ Cyton.prototype._processBytes = function (data) {
   }
 
   if (this.buffer && oldDataBuffer) {
+    this.buffer = Buffer.from(this.buffer);
+
     if (bufferEqual(this.buffer, oldDataBuffer)) {
       this.buffer = null;
     }
@@ -1922,19 +1943,29 @@ Cyton.prototype._processDataBuffer = function (dataBuffer) {
   if (_.isNull(dataBuffer) || _.isUndefined(dataBuffer)) return null;
   const output = obciUtils.extractRawDataPackets(dataBuffer);
 
-  dataBuffer = output.buffer;
+  dataBuffer = output.buffer === null ? null : Buffer.from(output.buffer);
 
   this.timeOfPacketArrival = this.time();
 
-  _.forEach(output.rawDataPackets, (rawDataPacket) => {
+  for (let i = 0; i < output.rawDataPackets.length; i++) {
     // Emit that buffer
+    const rawDataPacket = output.rawDataPackets[i];
     this.emit('rawDataPacket', rawDataPacket);
     // Submit the packet for processing
     this._processQualifiedPacket(rawDataPacket);
     this._rawDataPacketToSample.rawDataPacket = rawDataPacket;
     const sample = obciUtils.transformRawDataPacketToSample(this._rawDataPacketToSample);
     this._finalizeNewSample(sample);
-  });
+  }
+  // _.forEach(output.rawDataPackets, (rawDataPacket) => {
+  //   // Emit that buffer
+  //   this.emit('rawDataPacket', rawDataPacket);
+  //   // Submit the packet for processing
+  //   this._processQualifiedPacket(rawDataPacket);
+  //   this._rawDataPacketToSample.rawDataPacket = rawDataPacket;
+  //   const sample = obciUtils.transformRawDataPacketToSample(this._rawDataPacketToSample);
+  //   this._finalizeNewSample(sample);
+  // });
 
   return dataBuffer;
 };
@@ -1957,6 +1988,12 @@ Cyton.prototype._processParseBufferForReset = function (dataBuffer) {
   if (this.info.firmware) {
     this.writeOutDelay = k.OBCIWriteIntervalDelayMSShort;
   } else {
+    this.info.firmware = {
+      major: 1,
+      minor: 0,
+      patch: 0,
+      raw: 'v1.0.0'
+    };
     this.writeOutDelay = k.OBCIWriteIntervalDelayMSLong;
   }
 };
@@ -2084,7 +2121,7 @@ Cyton.prototype._processPacketTimeSyncSet = function (rawPacket, timeOfPacketArr
       //     t                                   t confirmation
       if ((this.sync.curSyncObj.timeSyncSetPacket - this.sync.curSyncObj.timeSyncSentConfirmation) < k.OBCITimeSyncThresholdTransFailureMS) {
         // Estimate that 75% of the time between sent and set packet was spent on the packet making its way from board to this point
-        this.sync.curSyncObj.timeTransmission = math.floor((this.sync.curSyncObj.timeSyncSetPacket - this.sync.curSyncObj.timeSyncSent) * k.OBCITimeSyncMultiplierWithSyncConf);
+        this.sync.curSyncObj.timeTransmission = Math.floor((this.sync.curSyncObj.timeSyncSetPacket - this.sync.curSyncObj.timeSyncSent) * k.OBCITimeSyncMultiplierWithSyncConf);
         if (this.options.verbose) console.log(`Had to correct transmission time`);
         this.sync.curSyncObj.correctedTransmissionTime = true;
       }

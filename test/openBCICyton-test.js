@@ -5,9 +5,8 @@ const chai = require('chai');
 const expect = chai.expect;
 const should = chai.should(); // eslint-disable-line no-unused-vars
 const Cyton = require('../openBCICyton');
-const OpenBCIUtilities = require('openbci-utilities');
-const openBCIUtilities = OpenBCIUtilities.Utilities;
-const k = OpenBCIUtilities.Constants;
+const openBCIUtilities = require('openbci-utilities/dist/utilities');
+const k = require('openbci-utilities/dist/constants');
 const chaiAsPromised = require('chai-as-promised');
 const sinonChai = require('sinon-chai');
 const bufferEqual = require('buffer-equal');
@@ -436,35 +435,37 @@ describe('openbci-sdk', function () {
         simulatorHasAccelerometer: false,
         simulatorInternalClockDrift: -1,
         simulatorInjectAlpha: false,
-        simulatorFragmentation: k.OBCISimulatorFragmentationOneByOne,
+        simulatorFragmentation: k.OBCISimulatorFragmentationFullBuffers,
         simulatorLatencyTime: 314,
         simulatorBufferSize: 2718,
         simulatorInjectLineNoise: k.OBCISimulatorLineNoiseNone,
         simulatorSampleRate: 16,
         simulatorSerialPortFailure: true
       });
-
+      ourBoard.once('ready', () => {
+        let simOptions = ourBoard.serial.options;
+        expect(simOptions).to.be.an('object');
+        expect(simOptions.accel).to.be.false();
+        expect(simOptions.alpha).to.be.false();
+        expect(simOptions.boardFailure).to.be.true();
+        expect(simOptions.daisy).to.be.true();
+        expect(simOptions.daisyCanBeAttached).to.be.false();
+        expect(simOptions.drift).to.be.below(0);
+        expect(simOptions.firmwareVersion).to.be.equal(k.OBCIFirmwareV2);
+        expect(simOptions.fragmentation).to.be.equal(k.OBCISimulatorFragmentationFullBuffers);
+        expect(simOptions.latencyTime).to.be.equal(314);
+        expect(simOptions.bufferSize).to.be.equal(2718);
+        expect(simOptions.lineNoise).to.be.equal(k.OBCISimulatorLineNoiseNone);
+        expect(simOptions.sampleRate).to.be.equal(16);
+        expect(simOptions.serialPortFailure).to.be.true();
+        expect(simOptions.verbose).to.be.true();
+      });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            let simOptions = ourBoard.serial.options;
-            expect(simOptions).to.be.an('object');
-            expect(simOptions.accel).to.be.false();
-            expect(simOptions.alpha).to.be.false();
-            expect(simOptions.boardFailure).to.be.true();
-            expect(simOptions.daisy).to.be.true();
-            expect(simOptions.daisyCanBeAttached).to.be.false();
-            expect(simOptions.drift).to.be.below(0);
-            expect(simOptions.firmwareVersion).to.be.equal(k.OBCIFirmwareV2);
-            expect(simOptions.fragmentation).to.be.equal(k.OBCISimulatorFragmentationOneByOne);
-            expect(simOptions.latencyTime).to.be.equal(314);
-            expect(simOptions.bufferSize).to.be.equal(2718);
-            expect(simOptions.lineNoise).to.be.equal(k.OBCISimulatorLineNoiseNone);
-            expect(simOptions.sampleRate).to.be.equal(16);
-            expect(simOptions.serialPortFailure).to.be.true();
-            expect(simOptions.verbose).to.be.true();
-            ourBoard.disconnect().then(done).catch(done);
-          });
+          return ourBoard.disconnect();
+        })
+        .then(() => {
+          done();
         }).catch(err => done(err));
     });
     it('should be able to set info for cyton board', function (done) {
@@ -536,11 +537,11 @@ describe('openbci-sdk', function () {
       ourBoard = new Cyton({
         debug: true
       });
-      ourBoard.connect(k.OBCISimulatorPortName).catch(done);
       ourBoard.once('ready', () => {
         sinon.spy(console, 'log');
         done();
       });
+      ourBoard.connect(k.OBCISimulatorPortName).catch(done);
     });
     after(function (done) {
       console.log.restore();
@@ -729,16 +730,6 @@ describe('openbci-sdk', function () {
               done(err);
             });
           };
-          const hardSetFuncOnTime = () => {
-            // Verify the module is still default
-            expect(ourBoard.getBoardType()).to.equal(k.OBCIBoardCyton);
-            // Remove the premature ready function because it won't fire
-            ourBoard.removeListener('ready', readyFuncPreMature);
-            // If the board was able to attach the daisy
-            ourBoard.once('ready', readyFuncTestFailure);
-            // If the board was unable to attach the daisy.
-            ourBoard.once('error', errorFuncTestSuccess); // should not happen
-          };
           const errorFuncTestSuccess = () => {
             // Verify the module is still default
             expect(ourBoard.getBoardType()).to.equal(k.OBCIBoardCyton);
@@ -751,17 +742,34 @@ describe('openbci-sdk', function () {
               done();
             });
           };
+          const readyFuncTestFailure = () => {
+            failTestWithErr('failed to attach daisy when requested, ready should not be emitted');
+          };
           const readyFuncPreMature = () => {
             ourBoard.removeListener('hardSet', hardSetFuncOnTime);
             failTestWithErr('the board should not have been ready yet');
           };
-          const readyFuncTestFailure = () => {
-            failTestWithErr('failed to attach daisy when requested, ready should not be emitted');
+          const hardSetFuncOnTime = () => {
+            // Verify the module is still default
+            expect(ourBoard.getBoardType()).to.equal(k.OBCIBoardCyton);
+            // Remove the premature ready function because it won't fire
+            ourBoard.removeListener('ready', readyFuncPreMature);
+            // If the board was able to attach the daisy
+            ourBoard.once('ready', readyFuncTestFailure);
+            // If the board was unable to attach the daisy.
+            ourBoard.once('error', errorFuncTestSuccess); // should not happen
           };
-
           ourBoard.once('ready', readyFuncPreMature);
           ourBoard.once('hardSet', hardSetFuncOnTime);
-          ourBoard.connect(masterPortName).catch(err => done(err));
+          ourBoard.connect(masterPortName)
+            .then(() => {
+              readyFuncPreMature();
+            })
+            .catch(err => {
+              expect(err).to.equal('Error: unable to attach daisy');
+              ourBoard.removeListener('ready', readyFuncTestFailure);
+              done();
+            });
         } else {
           done();
         }
@@ -1062,7 +1070,7 @@ describe('openbci-sdk', function () {
       before(function (done) {
         ourBoard.connect(k.OBCISimulatorPortName)
           .then(() => {
-            ourBoard.once('ready', done);
+            done();
           })
           .catch(err => done(err));
       });
@@ -1161,7 +1169,9 @@ describe('openbci-sdk', function () {
       before(function (done) {
         if (!ourBoard.isConnected()) {
           ourBoard.connect(masterPortName)
-            .then(done)
+            .then(() => {
+              done();
+            })
             .catch(done);
         } else {
           done();
@@ -1651,7 +1661,7 @@ describe('openbci-sdk', function () {
       // Ensure that we extracted only one buffer
       _processQualifiedPacketSpy.should.have.been.calledTwice();
       // The buffer should not have anything in it any more
-      bufferEqual(Buffer.concat([extraBuffer, extraBuffer], 2), buffer).should.be.true();
+      expect(bufferEqual(Buffer.concat([extraBuffer, extraBuffer], 2), buffer)).to.be.true();
       buffer.length.should.equal(extraBuffer.length * 2);
     });
   });
@@ -2067,7 +2077,12 @@ LIS3DH Device ID: 0x38422$$$`);
 
       ourBoard._processParseBufferForReset(buf);
 
-      ourBoard.info.firmware.should.equal(k.OBCIFirmwareV1);
+      ourBoard.info.firmware.should.deep.equal({
+        major: 1,
+        minor: 0,
+        patch: 0,
+        raw: 'v1.0.0'
+      });
       expect(ourBoard.getBoardType()).to.equal(k.OBCIBoardCyton);
       expect(ourBoard.sampleRate()).to.equal(k.OBCISampleRate250);
       expect(ourBoard.numberOfChannels()).to.equal(k.OBCINumberOfChannelsCyton);
@@ -2081,7 +2096,12 @@ $$$`);
 
       ourBoard._processParseBufferForReset(buf);
 
-      ourBoard.info.firmware.should.equal(k.OBCIFirmwareV1);
+      ourBoard.info.firmware.should.deep.equal({
+        major: 1,
+        minor: 0,
+        patch: 0,
+        raw: 'v1.0.0'
+      });
       expect(ourBoard.getBoardType()).to.equal(k.OBCIBoardDaisy);
       expect(ourBoard.sampleRate()).to.equal(k.OBCISampleRate125);
       expect(ourBoard.numberOfChannels()).to.equal(k.OBCINumberOfChannelsDaisy);
@@ -2090,12 +2110,17 @@ $$$`);
       let buf = new Buffer(`OpenBCI V3 Simulator
 On Board ADS1299 Device ID: 0x12345
 LIS3DH Device ID: 0x38422
-Firmware: v2.0.0
+Firmware: v2.1.3
 $$$`);
 
       ourBoard._processParseBufferForReset(buf);
 
-      ourBoard.info.firmware.should.equal(k.OBCIFirmwareV2);
+      ourBoard.info.firmware.should.deep.equal({
+        major: 2,
+        minor: 1,
+        patch: 3,
+        raw: 'v2.1.3'
+      });
       expect(ourBoard.getBoardType()).to.equal(k.OBCIBoardCyton);
       expect(ourBoard.sampleRate()).to.equal(k.OBCISampleRate250);
       expect(ourBoard.numberOfChannels()).to.equal(k.OBCINumberOfChannelsCyton);
@@ -2109,7 +2134,12 @@ $$$`);
 
       ourBoard._processParseBufferForReset(buf);
 
-      ourBoard.info.firmware.should.equal(k.OBCIFirmwareV3);
+      ourBoard.info.firmware.should.deep.equal({
+        major: 3,
+        minor: 0,
+        patch: 1,
+        raw: 'v3.0.1'
+      });
       expect(ourBoard.getBoardType()).to.equal(k.OBCIBoardCyton);
       expect(ourBoard.sampleRate()).to.equal(k.OBCISampleRate250);
       expect(ourBoard.numberOfChannels()).to.equal(k.OBCINumberOfChannelsCyton);
@@ -2124,7 +2154,12 @@ $$$`);
 
       ourBoard._processParseBufferForReset(buf);
 
-      ourBoard.info.firmware.should.equal(k.OBCIFirmwareV2);
+      ourBoard.info.firmware.should.deep.equal({
+        major: 2,
+        minor: 0,
+        patch: 0,
+        raw: 'v2.0.0'
+      });
       expect(ourBoard.getBoardType()).to.equal(k.OBCIBoardDaisy);
       expect(ourBoard.sampleRate()).to.equal(k.OBCISampleRate125);
       expect(ourBoard.numberOfChannels()).to.equal(k.OBCINumberOfChannelsDaisy);
@@ -2134,12 +2169,17 @@ $$$`);
 On Board ADS1299 Device ID: 0x12345
 On Daisy ADS1299 Device ID: 0xFFFFF
 LIS3DH Device ID: 0x38422
-Firmware: v3.1.69
+Firmware: v3.1.60
 $$$`);
 
       ourBoard._processParseBufferForReset(buf);
 
-      ourBoard.info.firmware.should.equal(k.OBCIFirmwareV3);
+      ourBoard.info.firmware.should.deep.equal({
+        major: 3,
+        minor: 1,
+        patch: 60,
+        raw: 'v3.1.60'
+      });
       expect(ourBoard.getBoardType()).to.equal(k.OBCIBoardDaisy);
       expect(ourBoard.sampleRate()).to.equal(k.OBCISampleRate125);
       expect(ourBoard.numberOfChannels()).to.equal(k.OBCINumberOfChannelsDaisy);
@@ -2184,13 +2224,13 @@ $$$`);
         // Verify the parse function was not called
         _processParseBufferForResetSpy.should.not.have.been.called();
         // Verify the global buffer has the first buf in it
-        bufferEqual(ourBoard.buffer, buf1);
+        expect(bufferEqual(ourBoard.buffer, buf1)).to.be.true();
         // Send another buffer without EOT
         ourBoard._processBytes(buf2);
         // Verify the parse function was not called
         _processParseBufferForResetSpy.should.not.have.been.called();
         // Verify the global buffer has the first and second buf in it
-        bufferEqual(ourBoard.buffer, Buffer.concat([buf1, buf2]));
+        expect(bufferEqual(ourBoard.buffer, Buffer.concat([buf1, buf2]))).to.be.true();
         // Send another buffer without EOT
         ourBoard._processBytes(buf3);
         // Verify the parse function was called
@@ -2252,7 +2292,7 @@ $$$`);
         expect(emitted).to.be.true();
       });
       it('should call to find the time sync set character in the buffer after packet', function () {
-        let buf1 = openBCIUtilities.samplePacket();
+        let buf1 = Buffer.from(openBCIUtilities.samplePacket());
         let buf2 = new Buffer(',');
 
         // Call the processBytes function
@@ -2264,9 +2304,9 @@ $$$`);
       // ourBoard.buffer.length.should.equal(0)
       });
       it('should find time sync and emit two samples', function (done) {
-        let buf1 = openBCIUtilities.samplePacket(250);
+        let buf1 = Buffer.from(openBCIUtilities.samplePacket(250));
         let buf2 = new Buffer([0x2C]);
-        let buf3 = openBCIUtilities.samplePacket(251);
+        let buf3 = Buffer.from(openBCIUtilities.samplePacket(251));
 
         let inputBuf = Buffer.concat([buf1, buf2, buf3], buf1.byteLength + 1 + buf3.byteLength);
 
@@ -2293,9 +2333,9 @@ $$$`);
         ourBoard._processBytes(inputBuf);
       });
       it('should not find the packet if in packet', () => {
-        let buf1 = openBCIUtilities.samplePacket(250);
+        let buf1 = Buffer.from(openBCIUtilities.samplePacket(250));
         buf1[4] = 0x2C; // Inject a false packet
-        let buf2 = openBCIUtilities.samplePacket(251);
+        let buf2 = Buffer.from(openBCIUtilities.samplePacket(251));
 
         // Call the processBytes function
         ourBoard._processBytes(Buffer.concat([buf1, buf2], buf1.length + buf2.length));
@@ -2324,9 +2364,9 @@ $$$`);
       });
       it('should get three packets even if one was sent in the last data emit', function () {
         let expectedSampleNumber = 0;
-        let buf1 = openBCIUtilities.samplePacketReal(expectedSampleNumber);
-        let buf2 = openBCIUtilities.samplePacketReal(expectedSampleNumber + 1);
-        let buf3 = openBCIUtilities.samplePacketReal(expectedSampleNumber + 2);
+        let buf1 = Buffer.from(openBCIUtilities.samplePacketReal(expectedSampleNumber));
+        let buf2 = Buffer.from(openBCIUtilities.samplePacketReal(expectedSampleNumber + 1));
+        let buf3 = Buffer.from(openBCIUtilities.samplePacketReal(expectedSampleNumber + 2));
         // Pretend that half of buf1 got sent in the first serial flush
         //  and that the last half of it will arrive a lil later
         let splitPoint = 15;
@@ -2357,9 +2397,9 @@ $$$`);
       });
       it('should keep extra data in the buffer', function () {
         let expectedSampleNumber = 0;
-        let buf1 = openBCIUtilities.samplePacketReal(expectedSampleNumber);
-        let buf2 = openBCIUtilities.samplePacketReal(expectedSampleNumber + 1);
-        let buf3 = openBCIUtilities.samplePacketReal(expectedSampleNumber + 2);
+        let buf1 = Buffer.from(openBCIUtilities.samplePacketReal(expectedSampleNumber));
+        let buf2 = Buffer.from(openBCIUtilities.samplePacketReal(expectedSampleNumber + 1));
+        let buf3 = Buffer.from(openBCIUtilities.samplePacketReal(expectedSampleNumber + 2));
         // Pretend that half of buf1 got sent in the first serial flush
         //  and that the last half of it will arrive a lil later
         let splitPoint = 15;
@@ -2401,9 +2441,9 @@ $$$`);
 
         // New buffer incoming
         let expectedSampleNumber = 1;
-        let buf1 = openBCIUtilities.samplePacketReal(expectedSampleNumber);
-        let buf2 = openBCIUtilities.samplePacketReal(expectedSampleNumber + 1);
-        let buf3 = openBCIUtilities.samplePacketReal(expectedSampleNumber + 2);
+        let buf1 = Buffer.from(openBCIUtilities.samplePacketReal(expectedSampleNumber));
+        let buf2 = Buffer.from(openBCIUtilities.samplePacketReal(expectedSampleNumber + 1));
+        let buf3 = Buffer.from(openBCIUtilities.samplePacketReal(expectedSampleNumber + 2));
 
         // New data incoming!
         let dataBuf = Buffer.concat([buf1, buf2, buf3]);
@@ -2577,7 +2617,7 @@ $$$`);
     after(() => bluebirdChecks.noPendingPromises());
     it('should return true if firmware is version 2', () => {
       ourBoard = new Cyton();
-      ourBoard.info.firmware = 'v2';
+      ourBoard.info.firmware.major = 2;
 
       expect(ourBoard.usingVersionTwoFirmware()).to.be.true();
     });
@@ -2592,7 +2632,7 @@ $$$`);
     after(() => bluebirdChecks.noPendingPromises());
     it('should return true if firmware is version 3', () => {
       ourBoard = new Cyton();
-      ourBoard.info.firmware = 'v3';
+      ourBoard.info.firmware.major = 3;
 
       expect(ourBoard.usingVersionThreeFirmware()).to.be.true();
     });
@@ -2607,13 +2647,13 @@ $$$`);
     after(() => bluebirdChecks.noPendingPromises());
     it('should return true if firmware is version 3', () => {
       ourBoard = new Cyton();
-      ourBoard.info.firmware = 'v2';
+      ourBoard.info.firmware.major = 2;
 
       expect(ourBoard.usingAtLeastVersionTwoFirmware()).to.be.true();
     });
     it('should return true if firmware is version 3', () => {
       ourBoard = new Cyton();
-      ourBoard.info.firmware = 'v3';
+      ourBoard.info.firmware.major = 3;
 
       expect(ourBoard.usingAtLeastVersionTwoFirmware()).to.be.true();
     });
@@ -2730,9 +2770,6 @@ describe('#daisy', function () {
           console.log(`has daisy module: ${ourBoard.options.simulatorDaisyModuleAttached}`);
           return ourBoard.connect(k.OBCISimulatorPortName);
         })
-        .then(() => {
-          return ourBoard.softReset();
-        })
         .catch(err => console.log(err));
     };
     ourBoard.autoFindOpenBCIBoard()
@@ -2808,9 +2845,6 @@ describe('#syncWhileStreaming', function () {
         .then(() => {
           console.log(`sim firmware version: ${ourBoard.options.simulatorFirmwareVersion}`);
           return ourBoard.connect(k.OBCISimulatorPortName);
-        })
-        .then(() => {
-          return ourBoard.softReset();
         })
         .catch(err => console.log(err));
     };
@@ -2919,9 +2953,6 @@ describe('#syncErrors', function () {
       ourBoard.simulatorEnable()
         .then(() => {
           return ourBoard.connect(k.OBCISimulatorPortName);
-        })
-        .then(() => {
-          return ourBoard.softReset();
         })
         .catch(err => console.log(err));
     };

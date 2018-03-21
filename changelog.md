@@ -1,3 +1,12 @@
+# 1.1.0
+
+Bumping the minor version of openbci-utilities allows this module to move forward
+
+### Breaking Changes
+
+* Drop support for node 4 because of new OpenBCI utilities
+* Connect will now automatically call `softReset` and resolve once it's complete.
+
 # 1.0.8
 
 Bump serial port to 1.0.8

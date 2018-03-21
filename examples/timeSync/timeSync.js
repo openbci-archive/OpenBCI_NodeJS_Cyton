@@ -26,6 +26,7 @@ ourBoard.autoFindOpenBCIBoard().then(portName => {
     // Call to connect
     ourBoard.connect(portName).then(() => {
       console.log(`connected`);
+      readyFunc();
     })
       .catch(err => {
         console.log(`connect: ${err}`);
@@ -88,7 +89,7 @@ const sampleFunc = sample => {
 };
 
 // Subscribe to your functions
-ourBoard.on('ready', readyFunc);
+// ourBoard.on('ready', readyFunc);
 ourBoard.on('sample', sampleFunc);
 
 function exitHandler (options, err) {
