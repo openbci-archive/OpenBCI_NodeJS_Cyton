@@ -60,11 +60,21 @@ const Cyton = require('openbci-cyton');
 const ourBoard = new Cyton();
 ourBoard.connect(portName) // Port name is a serial port name, see `.listPorts()`
   .then(() => {
-    ourBoard.on('ready',() => {
-      
+    ourBoard.streamStart();
+    ourBoard.on('sample',(sample) => {
+      /** Work with sample */
+      for (let i = 0; i < ourBoard.numberOfChannels(); i++) {
+        console.log("Channel " + (i + 1) + ": " + sample.channelData[i].toFixed(8) + " Volts.");
+        // prints to the console
+        //  "Channel 1: 0.00001987 Volts."
+        //  "Channel 2: 0.00002255 Volts."
+        //  ...
+        //  "Channel 8: -0.00001875 Volts."
+      }
     });
 });
 ```
+
 
 # <a name="cyton"></a> Cyton
 
@@ -166,9 +176,7 @@ so installing the 'sample' listener and writing before the ready event might res
 const Cyton = require('openbci-cyton');
 const ourBoard = new Cyton();
 ourBoard.connect(portName).then(function(boardSerial) {
-    ourBoard.on('ready',function() {
-        /** Start streaming, reading registers, what ever your heart desires  */
-    });
+   /** Start streaming, reading registers, what ever your heart desires  */
 }).catch(function(err) {
     /** Handle connection errors */
 });            
@@ -199,12 +207,10 @@ To get a ['sample'](#event-sample) event, you need to:
 const Cyton = require('openbci-cyton');
 const ourBoard = new Cyton();
 ourBoard.connect(portName).then(function() {
-    ourBoard.on('ready',function() {
-        ourBoard.streamStart();
-        ourBoard.on('sample',function(sample) {
-            /** Work with sample */
-        });
-    });
+  ourBoard.streamStart();
+  ourBoard.on('sample',function(sample) {
+    /** Work with sample */
+  });
 }).catch(function(err) {
     /** Handle connection errors */
 });            
@@ -239,20 +245,17 @@ let timeSyncPossible = false;
 
 // Call to connect
 ourBoard.connect(portName).then(() => {
-  ourBoard.on('ready',() => {
-    // Get the sample rate after 'ready'
-    sampleRate = ourBoard.sampleRate();
-    // Find out if you can even time sync, you must be using v2 and this is only accurate after a `.softReset()` call which is called internally on `.connect()`. We parse the `.softReset()` response for the presence of firmware version 2 properties.
-    timeSyncPossible = ourBoard.usingVersionTwoFirmware();
-
-    ourBoard.streamStart()
-      .then(() => {
-        /** Start streaming command sent to board. */
-      })
-      .catch(err => {
-        console.log(`stream start: ${err}`);
-      });
-  });
+  // Get the sample rate after 'ready'
+  sampleRate = ourBoard.sampleRate();
+  // Find out if you can even time sync, you must be using v2 and this is only accurate after a `.softReset()` call which is called internally on `.connect()`. We parse the `.softReset()` response for the presence of firmware version 2 properties.
+  timeSyncPossible = ourBoard.usingVersionTwoFirmware();
+    
+  ourBoard.streamStart()
+    .then(() => {
+      /** Start streaming command sent to board. */
+    }).catch(err => {
+      console.log(`stream start: ${err}`);
+    });
 
   // PTW recommends sample driven  
   ourBoard.on('sample',sample => {
@@ -336,13 +339,11 @@ Without further ado, here is an example:
 const Cyton = require('openbci-cyton');
 const ourBoard = new Cyton();
 ourBoard.connect(portName).then(function(boardSerial) {
-    ourBoard.on('ready',function() {
-        ourBoard.streamStart();
-        ourBoard.once('impedanceArray', impedanceArray => {
-            /** Work with impedance Array */
-        });
-        ourBoard.impedanceTestChannels(['n','N','n','p','P','p','b','B']).catch(err => console.log(err));
+    ourBoard.streamStart();
+    ourBoard.once('impedanceArray', impedanceArray => {
+        /** Work with impedance Array */
     });
+    ourBoard.impedanceTestChannels(['n','N','n','p','P','p','b','B']).catch(err => console.log(err));
 }).catch(function(err) {
     /** Handle connection errors */
 });
