@@ -258,10 +258,17 @@ Cyton.prototype.connect = function (portName) {
     if (this.isConnected()) return reject(Error('already connected!'));
     this.overrideInfoForBoardType(this.options.boardType);
     this.buffer = null;
-    /* istanbul ignore else */
-    this.once('ready', () => {
+    const readyFunc = () => {
       resolve();
-    });
+      this.removeListener('error', errorFunc);
+    };
+    const errorFunc = (err) => {
+      reject(err);
+      this.removeListener('ready', readyFunc);
+    };
+    this.once('ready', readyFunc);
+    this.once('error', errorFunc);
+    /* istanbul ignore else */
     if (this.options.simulate || portName === k.OBCISimulatorPortName) {
       this.options.simulate = true;
       // If we are simulating, set portName to fake name
@@ -1851,7 +1858,10 @@ Cyton.prototype._processBytes = function (data) {
   let oldDataBuffer = null;
   if (this.buffer) {
     oldDataBuffer = this.buffer;
-    data = Buffer.concat([this.buffer, data]);
+    data = Buffer.concat([
+      Buffer.from(this.buffer),
+      Buffer.from(data)
+    ]);
   }
 
   switch (this.curParsingMode) {
@@ -1874,7 +1884,9 @@ Cyton.prototype._processBytes = function (data) {
             this.emit(k.OBCIEmitterHardSet);
             this.hardSetBoardType(this.options.boardType)
               .then(() => {
+                this.curParsingMode = k.OBCIParsingNormal;
                 this.emit(k.OBCIEmitterReady);
+                this.buffer = obciUtils.stripToEOTBuffer(data)
               })
               .catch((err) => {
                 this.emit(k.OBCIEmitterError, err);

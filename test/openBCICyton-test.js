@@ -730,16 +730,6 @@ describe('openbci-sdk', function () {
               done(err);
             });
           };
-          const hardSetFuncOnTime = () => {
-            // Verify the module is still default
-            expect(ourBoard.getBoardType()).to.equal(k.OBCIBoardCyton);
-            // Remove the premature ready function because it won't fire
-            ourBoard.removeListener('ready', readyFuncPreMature);
-            // If the board was able to attach the daisy
-            ourBoard.once('ready', readyFuncTestFailure);
-            // If the board was unable to attach the daisy.
-            ourBoard.once('error', errorFuncTestSuccess); // should not happen
-          };
           const errorFuncTestSuccess = () => {
             // Verify the module is still default
             expect(ourBoard.getBoardType()).to.equal(k.OBCIBoardCyton);
@@ -752,21 +742,34 @@ describe('openbci-sdk', function () {
               done();
             });
           };
+          const readyFuncTestFailure = () => {
+            failTestWithErr('failed to attach daisy when requested, ready should not be emitted');
+          };
           const readyFuncPreMature = () => {
             ourBoard.removeListener('hardSet', hardSetFuncOnTime);
             failTestWithErr('the board should not have been ready yet');
           };
-          const readyFuncTestFailure = () => {
-            failTestWithErr('failed to attach daisy when requested, ready should not be emitted');
+          const hardSetFuncOnTime = () => {
+            // Verify the module is still default
+            expect(ourBoard.getBoardType()).to.equal(k.OBCIBoardCyton);
+            // Remove the premature ready function because it won't fire
+            ourBoard.removeListener('ready', readyFuncPreMature);
+            // If the board was able to attach the daisy
+            ourBoard.once('ready', readyFuncTestFailure);
+            // If the board was unable to attach the daisy.
+            ourBoard.once('error', errorFuncTestSuccess); // should not happen
           };
-
-          // ourBoard.once('ready', readyFuncPreMature);
+          ourBoard.once('ready', readyFuncPreMature);
           ourBoard.once('hardSet', hardSetFuncOnTime);
           ourBoard.connect(masterPortName)
             .then(() => {
               readyFuncPreMature();
             })
-            .catch(err => done(err));
+            .catch(err => {
+              expect(err).to.equal('Error: unable to attach daisy');
+              ourBoard.removeListener('ready', readyFuncTestFailure);
+              done();
+            });
         } else {
           done();
         }
