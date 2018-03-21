@@ -712,7 +712,7 @@ describe('openbci-sdk', function () {
           done();
         }
       });
-      xit('daisy not attached in soft reset, daisy requested by user in options, module tries to attach and fails', function (done) {
+      it('daisy not attached in soft reset, daisy requested by user in options, module tries to attach and fails', function (done) {
         if (ourBoard.isSimulating()) {
           // Turn hardSet on
           ourBoard.options.hardSet = true;

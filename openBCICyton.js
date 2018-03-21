@@ -719,7 +719,7 @@ Cyton.prototype.radioChannelSet = function (channelNumber) {
     this.curParsingMode = k.OBCIParsingEOT;
 
     // Send the radio channel query command
-    this._writeAndDrain(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdChannelSet, channelNumber])).catch(reject);
+    this._writeAndDrain(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdChannelSet, channelNumber])).catch(reject);
   });
 };
 
@@ -769,7 +769,7 @@ Cyton.prototype.radioChannelSetHostOverride = function (channelNumber) {
     this.curParsingMode = k.OBCIParsingEOT;
 
     // Send the radio channel query command
-    this._writeAndDrain(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdChannelSetOverride, channelNumber])).catch(reject);
+    this._writeAndDrain(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdChannelSetOverride, channelNumber])).catch(reject);
   });
 };
 
@@ -819,7 +819,7 @@ Cyton.prototype.radioChannelGet = function () {
     this.curParsingMode = k.OBCIParsingEOT;
 
     // Send the radio channel query command
-    this._writeAndDrain(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdChannelGet])).catch(reject);
+    this._writeAndDrain(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdChannelGet])).catch(reject);
   });
 };
 
@@ -865,7 +865,7 @@ Cyton.prototype.radioPollTimeGet = function () {
     this.curParsingMode = k.OBCIParsingEOT;
 
     // Send the radio channel query command
-    this._writeAndDrain(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdPollTimeGet])).catch(reject);
+    this._writeAndDrain(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdPollTimeGet])).catch(reject);
   });
 };
 
@@ -916,7 +916,7 @@ Cyton.prototype.radioPollTimeSet = function (pollTime) {
     this.curParsingMode = k.OBCIParsingEOT;
 
     // Send the radio channel query command
-    this._writeAndDrain(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdPollTimeSet, pollTime])).catch(reject);
+    this._writeAndDrain(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdPollTimeSet, pollTime])).catch(reject);
   });
 };
 
@@ -955,7 +955,7 @@ Cyton.prototype.radioBaudRateSet = function (speed) {
       // Remove the timeout!
       clearTimeout(badCommsTimeout);
       badCommsTimeout = null;
-      let eotBuf = new Buffer('$$$');
+      let eotBuf = Buffer.from('$$$');
       let newBaudRateBuf;
       for (let i = data.length; i > 3; i--) {
         if (bufferEqual(data.slice(i - 3, i), eotBuf)) {
@@ -988,9 +988,9 @@ Cyton.prototype.radioBaudRateSet = function (speed) {
 
     // Send the radio channel query command
     if (speed === k.OBCIRadioBaudRateFastStr) {
-      this._writeAndDrain(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdBaudRateSetFast])).catch(reject);
+      this._writeAndDrain(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdBaudRateSetFast])).catch(reject);
     } else {
-      this._writeAndDrain(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdBaudRateSetDefault])).catch(reject);
+      this._writeAndDrain(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdBaudRateSetDefault])).catch(reject);
     }
   });
 };
@@ -1038,7 +1038,7 @@ Cyton.prototype.radioSystemStatusGet = function () {
     this.curParsingMode = k.OBCIParsingEOT;
 
     // Send the radio channel query command
-    this._writeAndDrain(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdSystemStatus])).catch(reject);
+    this._writeAndDrain(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdSystemStatus])).catch(reject);
   });
 };
 

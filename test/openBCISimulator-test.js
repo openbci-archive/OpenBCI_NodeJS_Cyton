@@ -420,7 +420,7 @@ describe('openBCISimulator', function () {
       describe('OBCIRadioCmdChannelGet', function () {
         it('should emit success if firmware version 2', done => {
           simulator.channelNumber = 0;
-          let buf = new Buffer(0);
+          let buf = Buffer.alloc(0);
           let dataEmit = data => {
             buf = Buffer.concat([buf, data]);
             if (openBCIUtilities.doesBufferHaveEOT(buf)) {
@@ -434,13 +434,13 @@ describe('openBCISimulator', function () {
 
           simulator.on('data', dataEmit);
 
-          simulator._processPrivateRadioMessage(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdChannelGet]));
+          simulator._processPrivateRadioMessage(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdChannelGet]));
         });
         it('should emit failure if board failure and host channel number', done => {
           // Turn board failure mode
           simulator.options.boardFailure = true;
           simulator.channelNumber = 9;
-          let buf = new Buffer(0);
+          let buf = Buffer.alloc(0);
           let dataEmit = data => {
             buf = Buffer.concat([buf, data]);
             if (openBCIUtilities.doesBufferHaveEOT(buf)) {
@@ -454,13 +454,13 @@ describe('openBCISimulator', function () {
 
           simulator.on('data', dataEmit);
 
-          simulator._processPrivateRadioMessage(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdChannelGet]));
+          simulator._processPrivateRadioMessage(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdChannelGet]));
         });
       });
       describe('OBCIRadioCmdChannelSet', function () {
         it('should set the channel number if in bounds', done => {
           let newChanNum = 20;
-          let buf = new Buffer(0);
+          let buf = Buffer.alloc(0);
           let dataEmit = data => {
             buf = Buffer.concat([buf, data]);
             if (openBCIUtilities.doesBufferHaveEOT(buf)) {
@@ -476,11 +476,11 @@ describe('openBCISimulator', function () {
 
           simulator.on('data', dataEmit);
 
-          simulator._processPrivateRadioMessage(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdChannelSet, newChanNum]));
+          simulator._processPrivateRadioMessage(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdChannelSet, newChanNum]));
         });
         it('should not set the channel number if out of bounds', done => {
           let newChanNum = 26;
-          let buf = new Buffer(0);
+          let buf = Buffer.alloc(0);
           let dataEmit = data => {
             buf = Buffer.concat([buf, data]);
             if (openBCIUtilities.doesBufferHaveEOT(buf)) {
@@ -493,12 +493,12 @@ describe('openBCISimulator', function () {
 
           simulator.on('data', dataEmit);
 
-          simulator._processPrivateRadioMessage(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdChannelSet, newChanNum]));
+          simulator._processPrivateRadioMessage(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdChannelSet, newChanNum]));
         });
         it('should emit failure if board failure', done => {
           // Turn board failure mode
           simulator.options.boardFailure = true;
-          let buf = new Buffer(0);
+          let buf = Buffer.alloc(0);
           let dataEmit = data => {
             buf = Buffer.concat([buf, data]);
             if (openBCIUtilities.doesBufferHaveEOT(buf)) {
@@ -510,7 +510,7 @@ describe('openBCISimulator', function () {
           };
 
           simulator.on('data', dataEmit);
-          simulator._processPrivateRadioMessage(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdChannelSet, 7]));
+          simulator._processPrivateRadioMessage(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdChannelSet, 7]));
         });
       });
       describe('OBCIRadioCmdChannelSetOverride', function () {
@@ -518,7 +518,7 @@ describe('openBCISimulator', function () {
           let systemChannelNumber = 0;
           let newHostChannelNumber = 1;
           simulator.channelNumber = systemChannelNumber;
-          let buf = new Buffer(0);
+          let buf = Buffer.alloc(0);
           let dataEmit = data => {
             buf = Buffer.concat([buf, data]);
             if (openBCIUtilities.doesBufferHaveEOT(buf)) {
@@ -535,14 +535,14 @@ describe('openBCISimulator', function () {
 
           simulator.on('data', dataEmit);
 
-          simulator._processPrivateRadioMessage(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdChannelSetOverride, newHostChannelNumber]));
+          simulator._processPrivateRadioMessage(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdChannelSetOverride, newHostChannelNumber]));
         });
         it('should change just the hosts channel number and not the systems channel number and fix a board failure', done => {
           let systemChannelNumber = 0;
           let oldHostChannelNumber = 1;
           simulator.channelNumber = systemChannelNumber;
           simulator.hostChannelNumber = oldHostChannelNumber;
-          let buf = new Buffer(0);
+          let buf = Buffer.alloc(0);
           let dataEmit = data => {
             buf = Buffer.concat([buf, data]);
             if (openBCIUtilities.doesBufferHaveEOT(buf)) {
@@ -559,11 +559,11 @@ describe('openBCISimulator', function () {
 
           simulator.on('data', dataEmit);
 
-          simulator._processPrivateRadioMessage(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdChannelSetOverride, systemChannelNumber]));
+          simulator._processPrivateRadioMessage(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdChannelSetOverride, systemChannelNumber]));
         });
         it('should not set the channel number if out of bounds', done => {
           let newChanNum = 26;
-          let buf = new Buffer(0);
+          let buf = Buffer.alloc(0);
           let dataEmit = data => {
             buf = Buffer.concat([buf, data]);
             if (openBCIUtilities.doesBufferHaveEOT(buf)) {
@@ -576,14 +576,14 @@ describe('openBCISimulator', function () {
 
           simulator.on('data', dataEmit);
 
-          simulator._processPrivateRadioMessage(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdChannelSetOverride, newChanNum]));
+          simulator._processPrivateRadioMessage(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdChannelSetOverride, newChanNum]));
         });
       });
       describe('OBCIRadioCmdPollTimeGet', function () {
         it('should emit success if firmware version 2 with poll time', done => {
           let expectedPollTime = 80;
           simulator.pollTime = expectedPollTime;
-          let buf = new Buffer(0);
+          let buf = Buffer.alloc(0);
           let dataEmit = data => {
             buf = Buffer.concat([buf, data]);
             if (openBCIUtilities.doesBufferHaveEOT(buf)) {
@@ -597,12 +597,12 @@ describe('openBCISimulator', function () {
 
           simulator.on('data', dataEmit);
 
-          simulator._processPrivateRadioMessage(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdPollTimeGet]));
+          simulator._processPrivateRadioMessage(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdPollTimeGet]));
         });
         it('should emit failure if board failure', done => {
           // Turn board failure mode
           simulator.options.boardFailure = true;
-          let buf = new Buffer(0);
+          let buf = Buffer.alloc(0);
           let dataEmit = data => {
             buf = Buffer.concat([buf, data]);
             if (openBCIUtilities.doesBufferHaveEOT(buf)) {
@@ -615,13 +615,13 @@ describe('openBCISimulator', function () {
 
           simulator.on('data', dataEmit);
 
-          simulator._processPrivateRadioMessage(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdPollTimeGet]));
+          simulator._processPrivateRadioMessage(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdPollTimeGet]));
         });
       });
       describe('OBCIRadioCmdPollTimeSet', function () {
         it('should set the poll time if in bounds', done => {
           let newPollTime = 20;
-          let buf = new Buffer(0);
+          let buf = Buffer.alloc(0);
           let dataEmit = data => {
             buf = Buffer.concat([buf, data]);
             if (openBCIUtilities.doesBufferHaveEOT(buf)) {
@@ -635,12 +635,12 @@ describe('openBCISimulator', function () {
 
           simulator.on('data', dataEmit);
 
-          simulator._processPrivateRadioMessage(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdPollTimeSet, newPollTime]));
+          simulator._processPrivateRadioMessage(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdPollTimeSet, newPollTime]));
         });
         it('should emit failure if board failure', done => {
           // Turn board failure mode
           simulator.options.boardFailure = true;
-          let buf = new Buffer(0);
+          let buf = Buffer.alloc(0);
           let dataEmit = data => {
             buf = Buffer.concat([buf, data]);
             if (openBCIUtilities.doesBufferHaveEOT(buf)) {
@@ -652,18 +652,18 @@ describe('openBCISimulator', function () {
           };
 
           simulator.on('data', dataEmit);
-          simulator._processPrivateRadioMessage(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdPollTimeSet, 7]));
+          simulator._processPrivateRadioMessage(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdPollTimeSet, 7]));
         });
       });
       describe('OBCIRadioCmdBaudRateSetDefault', function () {
         it('should emit success if firmware version 2 with proper baud rate', done => {
-          let buf = new Buffer(0);
+          let buf = Buffer.alloc(0);
           let dataEmit = data => {
             buf = Buffer.concat([buf, data]);
             if (openBCIUtilities.doesBufferHaveEOT(buf)) {
               expect(openBCIUtilities.isSuccessInBuffer(buf)).to.be.true();
               expect(openBCIUtilities.isFailureInBuffer(buf)).to.be.false();
-              let eotBuf = new Buffer('$$$');
+              let eotBuf = Buffer.from('$$$');
               let newBaudRateBuf;
               for (let i = buf.length; i > 3; i--) {
                 if (bufferEqual(buf.slice(i - 3, i), eotBuf)) {
@@ -680,12 +680,12 @@ describe('openBCISimulator', function () {
 
           simulator.on('data', dataEmit);
 
-          simulator._processPrivateRadioMessage(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdBaudRateSetDefault]));
+          simulator._processPrivateRadioMessage(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdBaudRateSetDefault]));
         });
         it('should emit success if board failure', done => {
           // Turn board failure mode
           simulator.options.boardFailure = true;
-          let buf = new Buffer(0);
+          let buf = Buffer.alloc(0);
           let dataEmit = data => {
             buf = Buffer.concat([buf, data]);
             if (openBCIUtilities.doesBufferHaveEOT(buf)) {
@@ -698,18 +698,18 @@ describe('openBCISimulator', function () {
 
           simulator.on('data', dataEmit);
 
-          simulator._processPrivateRadioMessage(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdBaudRateSetDefault]));
+          simulator._processPrivateRadioMessage(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdBaudRateSetDefault]));
         });
       });
       describe('OBCIRadioCmdBaudRateSetFast', function () {
         it('should emit success if firmware version 2 with proper baud rate', done => {
-          let buf = new Buffer(0);
+          let buf = Buffer.alloc(0);
           let dataEmit = data => {
             buf = Buffer.concat([buf, data]);
             if (openBCIUtilities.doesBufferHaveEOT(buf)) {
               expect(openBCIUtilities.isSuccessInBuffer(buf)).to.be.true();
               expect(openBCIUtilities.isFailureInBuffer(buf)).to.be.false();
-              let eotBuf = new Buffer(`$$$`);
+              let eotBuf = Buffer.from(`$$$`);
               let newBaudRateBuf;
               for (let i = buf.length; i > 3; i--) {
                 if (bufferEqual(buf.slice(i - 3, i), eotBuf)) {
@@ -726,12 +726,12 @@ describe('openBCISimulator', function () {
 
           simulator.on('data', dataEmit);
 
-          simulator._processPrivateRadioMessage(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdBaudRateSetFast]));
+          simulator._processPrivateRadioMessage(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdBaudRateSetFast]));
         });
         it('should emit success if board failure', done => {
           // Turn board failure mode
           simulator.options.boardFailure = true;
-          let buf = new Buffer(0);
+          let buf = Buffer.alloc(0);
           let dataEmit = data => {
             buf = Buffer.concat([buf, data]);
             if (openBCIUtilities.doesBufferHaveEOT(buf)) {
@@ -744,12 +744,12 @@ describe('openBCISimulator', function () {
 
           simulator.on('data', dataEmit);
 
-          simulator._processPrivateRadioMessage(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdBaudRateSetFast]));
+          simulator._processPrivateRadioMessage(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdBaudRateSetFast]));
         });
       });
       describe('OBCIRadioCmdSystemStatus', function () {
         it('should emit success if firmware version 2', done => {
-          let buf = new Buffer(0);
+          let buf = Buffer.alloc(0);
           let dataEmit = data => {
             buf = Buffer.concat([buf, data]);
             if (openBCIUtilities.doesBufferHaveEOT(buf)) {
@@ -762,12 +762,12 @@ describe('openBCISimulator', function () {
 
           simulator.on('data', dataEmit);
 
-          simulator._processPrivateRadioMessage(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdSystemStatus]));
+          simulator._processPrivateRadioMessage(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdSystemStatus]));
         });
         it('should emit failure if board failure', done => {
           // Turn board failure mode
           simulator.options.boardFailure = true;
-          let buf = new Buffer(0);
+          let buf = Buffer.alloc(0);
           let dataEmit = data => {
             buf = Buffer.concat([buf, data]);
             if (openBCIUtilities.doesBufferHaveEOT(buf)) {
@@ -780,7 +780,7 @@ describe('openBCISimulator', function () {
 
           simulator.on('data', dataEmit);
 
-          simulator._processPrivateRadioMessage(new Buffer([k.OBCIRadioKey, k.OBCIRadioCmdSystemStatus]));
+          simulator._processPrivateRadioMessage(Buffer.from([k.OBCIRadioKey, k.OBCIRadioCmdSystemStatus]));
         });
       });
     });
@@ -835,7 +835,7 @@ describe('openBCISimulator', function () {
       simulator = new OpenBCISimulator(portName, {
         fragmentation: k.OBCISimulatorFragmentationRandom
       });
-      let buffer = new Buffer(0);
+      let buffer = Buffer.alloc(0);
       let counter = 0;
       simulator.on('data', function (data) {
         buffer = Buffer.concat([buffer, data], buffer.length + data.length);
