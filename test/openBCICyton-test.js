@@ -712,7 +712,7 @@ describe('openbci-sdk', function () {
           done();
         }
       });
-      it('daisy not attached in soft reset, daisy requested by user in options, module tries to attach and fails', function (done) {
+      xit('daisy not attached in soft reset, daisy requested by user in options, module tries to attach and fails', function (done) {
         if (ourBoard.isSimulating()) {
           // Turn hardSet on
           ourBoard.options.hardSet = true;
@@ -760,9 +760,13 @@ describe('openbci-sdk', function () {
             failTestWithErr('failed to attach daisy when requested, ready should not be emitted');
           };
 
-          ourBoard.once('ready', readyFuncPreMature);
+          // ourBoard.once('ready', readyFuncPreMature);
           ourBoard.once('hardSet', hardSetFuncOnTime);
-          ourBoard.connect(masterPortName).catch(err => done(err));
+          ourBoard.connect(masterPortName)
+            .then(() => {
+              readyFuncPreMature();
+            })
+            .catch(err => done(err));
         } else {
           done();
         }
@@ -1175,7 +1179,7 @@ describe('openbci-sdk', function () {
           .then(done)
           .catch(done);
       });
-      xit('should resolve for setting max channels to 8 when already 8', function (done) {
+      it('should resolve for setting max channels to 8 when already 8', function (done) {
         if (ourBoard.isSimulating()) {
           ourBoard.serial.options.daisy = false;
           ourBoard.hardSetBoardType('default')

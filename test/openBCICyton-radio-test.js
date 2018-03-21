@@ -79,16 +79,14 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.streamStart()
-              .then(() => {
-                ourBoard.radioChannelSet(1).then(() => {
-                  done('should have rejected');
-                }).catch(() => {
-                  done(); // Test pass
-                });
-              }).catch(err => done(err));
-          });
+          ourBoard.streamStart()
+            .then(() => {
+              ourBoard.radioChannelSet(1).then(() => {
+                done('should have rejected');
+              }).catch(() => {
+                done(); // Test pass
+              });
+            }).catch(err => done(err));
         }).catch(err => done(err));
     });
     it('should reject if not firmware version 2', function (done) {
@@ -98,9 +96,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioChannelSet(1).should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioChannelSet(1).should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
     it('should reject if a number is not sent as input', function (done) {
@@ -111,9 +107,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioChannelSet('1').should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioChannelSet('1').should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
 
@@ -125,9 +119,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioChannelSet().should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioChannelSet().should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
 
@@ -139,9 +131,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioChannelSet(-1).should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioChannelSet(-1).should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
 
@@ -153,9 +143,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioChannelSet(26).should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioChannelSet(26).should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
 
@@ -168,9 +156,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioChannelSet(1).should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioChannelSet(1).should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
 
@@ -183,12 +169,10 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioChannelSet(newChannelNumber).then(channelNumber => {
-              expect(channelNumber).to.be.equal(newChannelNumber);
-              done();
-            }).catch(err => done(err));
-          });
+          ourBoard.radioChannelSet(newChannelNumber).then(channelNumber => {
+            expect(channelNumber).to.be.equal(newChannelNumber);
+            done();
+          }).catch(err => done(err));
         }).catch(err => done(err));
     });
   });
@@ -220,16 +204,14 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.streamStart()
-              .then(() => {
-                ourBoard.radioChannelSetHostOverride(1).then(() => {
-                  done('should have rejected');
-                }).catch(() => {
-                  done(); // Test pass
-                });
-              }).catch(err => done(err));
-          });
+          ourBoard.streamStart()
+            .then(() => {
+              ourBoard.radioChannelSetHostOverride(1).then(() => {
+                done('should have rejected');
+              }).catch(() => {
+                done(); // Test pass
+              });
+            }).catch(err => done(err));
         }).catch(err => done(err));
     });
     it('should reject if a number is not sent as input', function (done) {
@@ -240,9 +222,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioChannelSetHostOverride('1').should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioChannelSetHostOverride('1').should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
     it('should reject if no channel number is presented as arg', function (done) {
@@ -253,9 +233,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioChannelSetHostOverride().should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioChannelSetHostOverride().should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
     it('should reject if the requested new channel number is lower than 0', function (done) {
@@ -266,9 +244,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioChannelSetHostOverride(-1).should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioChannelSetHostOverride(-1).should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
     it('should reject if the requested new channel number is higher than 25', function (done) {
@@ -279,9 +255,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioChannelSetHostOverride(26).should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioChannelSetHostOverride(26).should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
     it('should change the channel if connected, not steaming, and using firmware version 2+', function (done) {
@@ -293,12 +267,10 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioChannelSetHostOverride(newChannelNumber).then(channelNumber => {
-              expect(channelNumber).to.be.equal(newChannelNumber);
-              done();
-            }).catch(err => done(err));
-          });
+          ourBoard.radioChannelSetHostOverride(newChannelNumber).then(channelNumber => {
+            expect(channelNumber).to.be.equal(newChannelNumber);
+            done();
+          }).catch(err => done(err));
         }).catch(err => done(err));
     });
   });
@@ -329,16 +301,14 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.streamStart()
-              .then(() => {
-                ourBoard.radioChannelGet().then(() => {
-                  done('should have rejected');
-                }).catch(() => {
-                  done(); // Test pass
-                });
-              }).catch(err => done(err));
-          });
+          ourBoard.streamStart()
+            .then(() => {
+              ourBoard.radioChannelGet().then(() => {
+                done('should have rejected');
+              }).catch(() => {
+                done(); // Test pass
+              });
+            }).catch(err => done(err));
         }).catch(err => done(err));
     });
     it('should not query if not firmware version 2', function (done) {
@@ -348,9 +318,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioChannelGet().should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioChannelGet().should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
     it('should query if firmware version 2', function (done) {
@@ -361,12 +329,10 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioChannelGet().then(res => {
-              expect(res.channelNumber).to.be.within(k.OBCIRadioChannelMin, k.OBCIRadioChannelMax);
-              done();
-            }).catch(err => done(err));
-          });
+          ourBoard.radioChannelGet().then(res => {
+            expect(res.channelNumber).to.be.within(k.OBCIRadioChannelMin, k.OBCIRadioChannelMax);
+            done();
+          }).catch(err => done(err));
         }).catch(err => done(err));
     });
     it('should get message even if the board is not communicating with dongle', function (done) {
@@ -378,9 +344,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioChannelGet().should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioChannelGet().should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
   });
@@ -413,16 +377,14 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.streamStart()
-              .then(() => {
-                ourBoard.radioPollTimeSet(1).then(() => {
-                  done('should have rejected');
-                }).catch(() => {
-                  done(); // Test pass
-                });
-              }).catch(err => done(err));
-          });
+          ourBoard.streamStart()
+            .then(() => {
+              ourBoard.radioPollTimeSet(1).then(() => {
+                done('should have rejected');
+              }).catch(() => {
+                done(); // Test pass
+              });
+            }).catch(err => done(err));
         }).catch(err => done(err));
     });
 
@@ -433,9 +395,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioPollTimeSet(1).should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioPollTimeSet(1).should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
 
@@ -447,9 +407,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioPollTimeSet('1').should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioPollTimeSet('1').should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
 
@@ -461,9 +419,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioPollTimeSet().should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioPollTimeSet().should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
 
@@ -475,9 +431,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioPollTimeSet(-1).should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioPollTimeSet(-1).should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
 
@@ -489,9 +443,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioPollTimeSet(256).should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioPollTimeSet(256).should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
 
@@ -504,9 +456,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioPollTimeSet(1).should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioPollTimeSet(1).should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
 
@@ -519,12 +469,10 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioPollTimeSet(newPollTime).then(() => {
-              done();
-            }).catch(err => {
-              done(err);
-            });
+          ourBoard.radioPollTimeSet(newPollTime).then(() => {
+            done();
+          }).catch(err => {
+            done(err);
           });
         }).catch(err => done(err));
     });
@@ -556,16 +504,14 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.streamStart()
-              .then(() => {
-                ourBoard.radioPollTimeGet().then(() => {
-                  done('should have rejected');
-                }).catch(() => {
-                  done(); // Test pass
-                });
-              }).catch(err => done(err));
-          });
+          ourBoard.streamStart()
+            .then(() => {
+              ourBoard.radioPollTimeGet().then(() => {
+                done('should have rejected');
+              }).catch(() => {
+                done(); // Test pass
+              });
+            }).catch(err => done(err));
         }).catch(err => done(err));
     });
     it('should not query if not firmware version 2', function (done) {
@@ -575,9 +521,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioPollTimeGet().should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioPollTimeGet().should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
     it('should query if firmware version 2', function (done) {
@@ -588,12 +532,10 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioPollTimeGet().then(pollTime => {
-              expect(pollTime).to.be.greaterThan(0);
-              done();
-            }).catch(err => done(err));
-          });
+          ourBoard.radioPollTimeGet().then(pollTime => {
+            expect(pollTime).to.be.greaterThan(0);
+            done();
+          }).catch(err => done(err));
         }).catch(err => done(err));
     });
     it('should get failure message if the board is not communicating with dongle', function (done) {
@@ -605,9 +547,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioPollTimeGet().should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioPollTimeGet().should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
   });
@@ -652,16 +592,14 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.streamStart()
-              .then(() => {
-                ourBoard.radioBaudRateSet('default').then(() => {
-                  done('should have rejected');
-                }).catch(() => {
-                  done(); // Test pass
-                });
-              }).catch(err => done(err));
-          });
+          ourBoard.streamStart()
+            .then(() => {
+              ourBoard.radioBaudRateSet('default').then(() => {
+                done('should have rejected');
+              }).catch(() => {
+                done(); // Test pass
+              });
+            }).catch(err => done(err));
         }).catch(err => done(err));
     });
     it('should not try to change the baud rate if not firmware version 2', function (done) {
@@ -671,9 +609,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioBaudRateSet('default').should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioBaudRateSet('default').should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
     it('should set the baud rate to default if firmware version 2', function (done) {
@@ -684,12 +620,10 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioBaudRateSet('default').then(baudrate => {
-              expect(baudrate).to.be.equal(115200);
-              done();
-            }).catch(err => done(err));
-          });
+          ourBoard.radioBaudRateSet('default').then(baudrate => {
+            expect(baudrate).to.be.equal(115200);
+            done();
+          }).catch(err => done(err));
         }).catch(err => done(err));
     });
     it('should set the baud rate to fast if firmware version 2', function (done) {
@@ -700,12 +634,10 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioBaudRateSet('fast').then(baudrate => {
-              expect(baudrate).to.be.equal(230400);
-              done();
-            }).catch(err => done(err));
-          });
+          ourBoard.radioBaudRateSet('fast').then(baudrate => {
+            expect(baudrate).to.be.equal(230400);
+            done();
+          }).catch(err => done(err));
         }).catch(err => done(err));
     });
   });
@@ -736,16 +668,14 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.streamStart()
-              .then(() => {
-                ourBoard.radioSystemStatusGet().then(() => {
-                  done('should have rejected');
-                }).catch(() => {
-                  done(); // Test pass
-                });
-              }).catch(err => done(err));
-          });
+          ourBoard.streamStart()
+            .then(() => {
+              ourBoard.radioSystemStatusGet().then(() => {
+                done('should have rejected');
+              }).catch(() => {
+                done(); // Test pass
+              });
+            }).catch(err => done(err));
         }).catch(err => done(err));
     });
     it('should not get system status if not firmware version 2', function (done) {
@@ -755,9 +685,7 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioSystemStatusGet().should.be.rejected.and.notify(done);
-          });
+          ourBoard.radioSystemStatusGet().should.be.rejected.and.notify(done);
         }).catch(err => done(err));
     });
     it('should get up system status if firmware version 2', function (done) {
@@ -768,12 +696,10 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioSystemStatusGet().then(isUp => {
-              expect(isUp).to.be.true();
-              done();
-            }).catch(err => done(err));
-          });
+          ourBoard.radioSystemStatusGet().then(isUp => {
+            expect(isUp).to.be.true();
+            done();
+          }).catch(err => done(err));
         }).catch(err => done(err));
     });
     it('should get down system status if firmware version 2', function (done) {
@@ -785,12 +711,10 @@ describe('openbci-radios', function () {
       });
       ourBoard.connect(k.OBCISimulatorPortName)
         .then(() => {
-          ourBoard.once('ready', () => {
-            ourBoard.radioSystemStatusGet().then(isUp => {
-              expect(isUp).to.be.false();
-              done();
-            }).catch(err => done(err));
-          });
+          ourBoard.radioSystemStatusGet().then(isUp => {
+            expect(isUp).to.be.false();
+            done();
+          }).catch(err => done(err));
         }).catch(err => done(err));
     });
   });
@@ -803,11 +727,9 @@ describe('openbci-radios', function () {
         simulatorFirmwareVersion: 'v2',
         simulatorFragmentation: k.OBCISimulatorFragmentationRandom
       });
-      ourBoard.connect(masterPortName).catch(err => done(err));
-
-      ourBoard.once('ready', () => {
-        done();
-      });
+      ourBoard.connect(masterPortName)
+        .then(done)
+        .catch(err => done(err));
     });
     after(function (done) {
       if (ourBoard.isConnected()) {
