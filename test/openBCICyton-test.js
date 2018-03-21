@@ -2292,7 +2292,7 @@ $$$`);
         expect(emitted).to.be.true();
       });
       it('should call to find the time sync set character in the buffer after packet', function () {
-        let buf1 = openBCIUtilities.samplePacket();
+        let buf1 = Buffer.from(openBCIUtilities.samplePacket());
         let buf2 = new Buffer(',');
 
         // Call the processBytes function
@@ -2304,9 +2304,9 @@ $$$`);
       // ourBoard.buffer.length.should.equal(0)
       });
       it('should find time sync and emit two samples', function (done) {
-        let buf1 = openBCIUtilities.samplePacket(250);
+        let buf1 = Buffer.from(openBCIUtilities.samplePacket(250));
         let buf2 = new Buffer([0x2C]);
-        let buf3 = openBCIUtilities.samplePacket(251);
+        let buf3 = Buffer.from(openBCIUtilities.samplePacket(251));
 
         let inputBuf = Buffer.concat([buf1, buf2, buf3], buf1.byteLength + 1 + buf3.byteLength);
 
@@ -2333,9 +2333,9 @@ $$$`);
         ourBoard._processBytes(inputBuf);
       });
       it('should not find the packet if in packet', () => {
-        let buf1 = openBCIUtilities.samplePacket(250);
+        let buf1 = Buffer.from(openBCIUtilities.samplePacket(250));
         buf1[4] = 0x2C; // Inject a false packet
-        let buf2 = openBCIUtilities.samplePacket(251);
+        let buf2 = Buffer.from(openBCIUtilities.samplePacket(251));
 
         // Call the processBytes function
         ourBoard._processBytes(Buffer.concat([buf1, buf2], buf1.length + buf2.length));
@@ -2364,9 +2364,9 @@ $$$`);
       });
       it('should get three packets even if one was sent in the last data emit', function () {
         let expectedSampleNumber = 0;
-        let buf1 = openBCIUtilities.samplePacketReal(expectedSampleNumber);
-        let buf2 = openBCIUtilities.samplePacketReal(expectedSampleNumber + 1);
-        let buf3 = openBCIUtilities.samplePacketReal(expectedSampleNumber + 2);
+        let buf1 = Buffer.from(openBCIUtilities.samplePacketReal(expectedSampleNumber));
+        let buf2 = Buffer.from(openBCIUtilities.samplePacketReal(expectedSampleNumber + 1));
+        let buf3 = Buffer.from(openBCIUtilities.samplePacketReal(expectedSampleNumber + 2));
         // Pretend that half of buf1 got sent in the first serial flush
         //  and that the last half of it will arrive a lil later
         let splitPoint = 15;
@@ -2397,9 +2397,9 @@ $$$`);
       });
       it('should keep extra data in the buffer', function () {
         let expectedSampleNumber = 0;
-        let buf1 = openBCIUtilities.samplePacketReal(expectedSampleNumber);
-        let buf2 = openBCIUtilities.samplePacketReal(expectedSampleNumber + 1);
-        let buf3 = openBCIUtilities.samplePacketReal(expectedSampleNumber + 2);
+        let buf1 = Buffer.from(openBCIUtilities.samplePacketReal(expectedSampleNumber));
+        let buf2 = Buffer.from(openBCIUtilities.samplePacketReal(expectedSampleNumber + 1));
+        let buf3 = Buffer.from(openBCIUtilities.samplePacketReal(expectedSampleNumber + 2));
         // Pretend that half of buf1 got sent in the first serial flush
         //  and that the last half of it will arrive a lil later
         let splitPoint = 15;
@@ -2441,9 +2441,9 @@ $$$`);
 
         // New buffer incoming
         let expectedSampleNumber = 1;
-        let buf1 = openBCIUtilities.samplePacketReal(expectedSampleNumber);
-        let buf2 = openBCIUtilities.samplePacketReal(expectedSampleNumber + 1);
-        let buf3 = openBCIUtilities.samplePacketReal(expectedSampleNumber + 2);
+        let buf1 = Buffer.from(openBCIUtilities.samplePacketReal(expectedSampleNumber));
+        let buf2 = Buffer.from(openBCIUtilities.samplePacketReal(expectedSampleNumber + 1));
+        let buf3 = Buffer.from(openBCIUtilities.samplePacketReal(expectedSampleNumber + 2));
 
         // New data incoming!
         let dataBuf = Buffer.concat([buf1, buf2, buf3]);

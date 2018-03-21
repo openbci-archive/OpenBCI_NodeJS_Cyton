@@ -33,19 +33,17 @@ ourBoard.autoFindOpenBCIBoard().then(portName => {
      */
     ourBoard.connect(portName) // Port name is a serial port name, see `.listPorts()`
       .then(() => {
-        ourBoard.once('ready', () => {
-          ourBoard.streamStart();
-          ourBoard.on('sample', (sample) => {
-            /** Work with sample */
-            for (let i = 0; i < ourBoard.numberOfChannels(); i++) {
-              console.log(`Channel ${(i + 1)}: ${sample.channelDataCounts[i].toFixed(8)} Volts.`);
-              // prints to the console
-              //  "Channel 1: 0.00001987 Volts."
-              //  "Channel 2: 0.00002255 Volts."
-              //  ...
-              //  "Channel 16: -0.00001875 Volts."
-            }
-          });
+        ourBoard.streamStart();
+        ourBoard.on('sample', (sample) => {
+          /** Work with sample */
+          for (let i = 0; i < ourBoard.numberOfChannels(); i++) {
+            console.log(`Channel ${(i + 1)}: ${sample.channelDataCounts[i].toFixed(8)} Volts.`);
+            // prints to the console
+            //  "Channel 1: 0.00001987 Volts."
+            //  "Channel 2: 0.00002255 Volts."
+            //  ...
+            //  "Channel 16: -0.00001875 Volts."
+          }
         });
       });
   } else {
