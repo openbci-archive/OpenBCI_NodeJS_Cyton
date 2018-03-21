@@ -1886,7 +1886,7 @@ Cyton.prototype._processBytes = function (data) {
               .then(() => {
                 this.curParsingMode = k.OBCIParsingNormal;
                 this.emit(k.OBCIEmitterReady);
-                this.buffer = obciUtils.stripToEOTBuffer(data)
+                this.buffer = obciUtils.stripToEOTBuffer(data);
               })
               .catch((err) => {
                 this.emit(k.OBCIEmitterError, err);
