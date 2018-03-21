@@ -406,7 +406,7 @@ describe('openbci-sdk', function () {
       });
       ourBoard.simulatorDisable().should.be.rejected.and.notify(done);
     });
-    xit('should disable sim and call disconnected', function (done) {
+    it('should disable sim and call disconnected', function (done) {
       ourBoard = new Cyton({
         verbose: true,
         simulate: true
@@ -1063,7 +1063,7 @@ describe('openbci-sdk', function () {
       before(function (done) {
         ourBoard.connect(k.OBCISimulatorPortName)
           .then(() => {
-            ourBoard.once('ready', done);
+            done();
           })
           .catch(err => done(err));
       });

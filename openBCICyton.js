@@ -1859,7 +1859,8 @@ Cyton.prototype._processBytes = function (data) {
       if (obciUtils.doesBufferHaveEOT(data)) {
         this.curParsingMode = k.OBCIParsingNormal;
         this.emit(k.OBCIEmitterEot, data);
-        this.buffer = Buffer.from(obciUtils.stripToEOTBuffer(data));
+        this.buffer = obciUtils.stripToEOTBuffer(data);
+        if (this.buffer) this.buffer = Buffer.from(this.buffer);
       } else {
         this.buffer = data;
       }
