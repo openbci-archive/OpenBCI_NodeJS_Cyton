@@ -406,7 +406,7 @@ describe('openbci-sdk', function () {
       });
       ourBoard.simulatorDisable().should.be.rejected.and.notify(done);
     });
-    it('should disable sim and call disconnected', function (done) {
+    xit('should disable sim and call disconnected', function (done) {
       ourBoard = new Cyton({
         verbose: true,
         simulate: true
@@ -435,7 +435,7 @@ describe('openbci-sdk', function () {
         simulatorHasAccelerometer: false,
         simulatorInternalClockDrift: -1,
         simulatorInjectAlpha: false,
-        simulatorFragmentation: k.OBCISimulatorFragmentationOneByOne,
+        simulatorFragmentation: k.OBCISimulatorFragmentationFullBuffers,
         simulatorLatencyTime: 314,
         simulatorBufferSize: 2718,
         simulatorInjectLineNoise: k.OBCISimulatorLineNoiseNone,
@@ -452,17 +452,21 @@ describe('openbci-sdk', function () {
         expect(simOptions.daisyCanBeAttached).to.be.false();
         expect(simOptions.drift).to.be.below(0);
         expect(simOptions.firmwareVersion).to.be.equal(k.OBCIFirmwareV2);
-        expect(simOptions.fragmentation).to.be.equal(k.OBCISimulatorFragmentationOneByOne);
+        expect(simOptions.fragmentation).to.be.equal(k.OBCISimulatorFragmentationFullBuffers);
         expect(simOptions.latencyTime).to.be.equal(314);
         expect(simOptions.bufferSize).to.be.equal(2718);
         expect(simOptions.lineNoise).to.be.equal(k.OBCISimulatorLineNoiseNone);
         expect(simOptions.sampleRate).to.be.equal(16);
         expect(simOptions.serialPortFailure).to.be.true();
         expect(simOptions.verbose).to.be.true();
-        ourBoard.disconnect().then(done).catch(done);
       });
       ourBoard.connect(k.OBCISimulatorPortName)
-        .then().catch(err => done(err));
+        .then(() => {
+          return ourBoard.disconnect();
+        })
+        .then(() => {
+          done();
+        }).catch(err => done(err));
     });
     it('should be able to set info for cyton board', function (done) {
       ourBoard.simulatorDisable()
@@ -1171,7 +1175,7 @@ describe('openbci-sdk', function () {
           .then(done)
           .catch(done);
       });
-      it('should resolve for setting max channels to 8 when already 8', function (done) {
+      xit('should resolve for setting max channels to 8 when already 8', function (done) {
         if (ourBoard.isSimulating()) {
           ourBoard.serial.options.daisy = false;
           ourBoard.hardSetBoardType('default')
@@ -2759,9 +2763,6 @@ describe('#daisy', function () {
           console.log(`has daisy module: ${ourBoard.options.simulatorDaisyModuleAttached}`);
           return ourBoard.connect(k.OBCISimulatorPortName);
         })
-        .then(() => {
-          return ourBoard.softReset();
-        })
         .catch(err => console.log(err));
     };
     ourBoard.autoFindOpenBCIBoard()
@@ -2837,9 +2838,6 @@ describe('#syncWhileStreaming', function () {
         .then(() => {
           console.log(`sim firmware version: ${ourBoard.options.simulatorFirmwareVersion}`);
           return ourBoard.connect(k.OBCISimulatorPortName);
-        })
-        .then(() => {
-          return ourBoard.softReset();
         })
         .catch(err => console.log(err));
     };
@@ -2948,9 +2946,6 @@ describe('#syncErrors', function () {
       ourBoard.simulatorEnable()
         .then(() => {
           return ourBoard.connect(k.OBCISimulatorPortName);
-        })
-        .then(() => {
-          return ourBoard.softReset();
         })
         .catch(err => console.log(err));
     };

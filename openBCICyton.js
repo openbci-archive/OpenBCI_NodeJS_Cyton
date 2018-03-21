@@ -259,6 +259,9 @@ Cyton.prototype.connect = function (portName) {
     this.overrideInfoForBoardType(this.options.boardType);
     this.buffer = null;
     /* istanbul ignore else */
+    this.once('ready', () => {
+      resolve();
+    });
     if (this.options.simulate || portName === k.OBCISimulatorPortName) {
       this.options.simulate = true;
       // If we are simulating, set portName to fake name
@@ -317,7 +320,7 @@ Cyton.prototype.connect = function (portName) {
         // which is C. not implemented yet except in a manner such that replies occur in the write handler,
         // resulting in the EOT arriving before this resolves
         // Fix one or more of the above 3 situations, then move resolve() to the next block.
-        resolve();
+        // resolve();
         return this.softReset();
       }).then(() => {
         if (this.options.verbose) console.log("Waiting for '$$$'");
