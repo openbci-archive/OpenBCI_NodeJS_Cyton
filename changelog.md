@@ -1,3 +1,9 @@
+# 1.1.2
+
+### Bug Fixes
+
+* Connected function failed
+
 # 1.1.1
 
 Bumping the mathjs to 4.0.1 to fix insecurity

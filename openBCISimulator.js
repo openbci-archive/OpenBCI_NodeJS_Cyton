@@ -65,7 +65,7 @@ function Simulator (portName, options) {
   this.options = opts;
 
   // Bools
-  this.connected = false;
+  this.isOpen = false;
   this.sd = {
     active: false,
     startTime: 0
@@ -94,7 +94,7 @@ function Simulator (portName, options) {
   // Call 'open'
   if (this.options.verbose) console.log(`Port name: ${portName}`);
   setTimeout(() => {
-    this.connected = true;
+    this.isOpen = true;
     this.emit('open');
   }, 200);
 }
@@ -111,13 +111,9 @@ Simulator.prototype.flush = function (callback) {
   if (callback) callback();
 };
 
-Simulator.prototype.isOpen = function () {
-  return this.connected;
-};
-
 // output only size bytes of the output buffer
 Simulator.prototype._partialDrain = function (size) {
-  if (!this.connected) throw new Error('not connected');
+  if (!this.isOpen) throw new Error('not connected');
 
   if (size > this.outputBuffered) size = this.outputBuffered;
 
@@ -188,7 +184,7 @@ Simulator.prototype._output = function (dataBuffer) {
 };
 
 Simulator.prototype.write = function (data, callback) {
-  if (!this.connected) {
+  if (!this.isOpen) {
     /* istanbul ignore else */
     if (callback) callback(Error('Not connected'));
     else throw new Error('Not connected!');
@@ -306,12 +302,12 @@ Simulator.prototype.drain = function (callback) {
 };
 
 Simulator.prototype.close = function (callback) {
-  if (this.connected) {
+  if (this.isOpen) {
     this.flush();
 
     if (this.stream) clearInterval(this.stream);
 
-    this.connected = false;
+    this.isOpen = false;
     this.emit('close');
     if (callback) callback();
   } else {
