@@ -1,3 +1,7 @@
+# 1.1.1
+
+Bumping the mathjs to 4.0.1 to fix insecurity
+
 # 1.1.0
 
 Bumping the minor version of openbci-utilities allows this module to move forward
