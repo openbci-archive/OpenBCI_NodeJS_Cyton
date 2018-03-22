@@ -405,7 +405,7 @@ Cyton.prototype.disconnect = function () {
  */
 Cyton.prototype.isConnected = function () {
   if (!this.serial) return false;
-  return this.serial.isOpen();
+  return this.serial.isOpen;
 };
 
 /**
