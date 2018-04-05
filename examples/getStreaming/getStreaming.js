@@ -42,12 +42,12 @@ if (myArgs.length === 1) {
 ourBoard.on('sample', (sample) => {
   /** Work with sample */
   for (let i = 0; i < ourBoard.numberOfChannels(); i++) {
-  console.log(`Channel ${(i + 1)}: ${sample.channelData[i].toFixed(8)} Volts.`);
-  // prints to the console
-  //  "Channel 1: 0.00001987 Volts."
-  //  "Channel 2: 0.00002255 Volts."
-  //  ...
-  //  "Channel 8: -0.00001875 Volts."
+    console.log(`Channel ${(i + 1)}: ${sample.channelData[i].toFixed(8)} Volts.`);
+    // prints to the console
+    //  "Channel 1: 0.00001987 Volts."
+    //  "Channel 2: 0.00002255 Volts."
+    //  ...
+    //  "Channel 8: -0.00001875 Volts."
   }
 });
 
@@ -61,15 +61,15 @@ ourBoard.connect(portName) // Port name is a serial port name, see `.listPorts()
     return ourBoard.syncRegisterSettings();
   })
   .then((cs) => {
-	  return ourBoard.streamStart();
+    return ourBoard.streamStart();
   })
   .catch((err) => {
-  	console.log('err', err);
-	  return ourBoard.streamStart();
+    console.log('err', err);
+    return ourBoard.streamStart();
   })
   .catch((err) => {
-	  console.log('fatal err', err);
-	  process.exit(0);
+    console.log('fatal err', err);
+    process.exit(0);
   });
 
 function exitHandler (options, err) {
