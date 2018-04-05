@@ -314,8 +314,6 @@ Cyton.prototype.connect = function (portName) {
         if (this.options.verbose) console.log('Sending stop command, in case the device was left streaming...');
         return this.write(k.OBCIStreamStop);
       }).then(() => {
-        return new Promise(resolve => this.serial.flush(resolve));
-      }).then(() => {
         // TODO: document why this 250 ms delay is needed
         return new Promise(resolve => setTimeout(resolve, 250));
       }).then(() => {
