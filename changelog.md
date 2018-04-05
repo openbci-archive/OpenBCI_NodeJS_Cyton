@@ -1,3 +1,9 @@
+# 1.1.3
+
+### Bug Fixes
+
+* Connect function failed and forced close of port when serial port flushed too fast
+
 # 1.1.2
 
 ### Bug Fixes

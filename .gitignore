@@ -47,3 +47,5 @@ hardwareVoltageOutputAll.txt
 # For python
 examples/python/dist/*
 examples/python/openbci_node_python.egg-info/*
+
+.vscode/
