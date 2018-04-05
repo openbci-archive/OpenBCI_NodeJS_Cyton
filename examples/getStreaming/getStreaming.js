@@ -9,7 +9,7 @@
  *   do `npm install`
  *   then `npm start`
  */
-const debug = true; // Pretty print any bytes in and out... it's amazing...
+const debug = false; // Pretty print any bytes in and out... it's amazing...
 const verbose = true; // Adds verbosity to functions
 
 const Cyton = require('../../openBCICyton');
@@ -18,10 +18,26 @@ let ourBoard = new Cyton({
   verbose: verbose
 });
 
-ourBoard.listPorts()
-  .then((ports) => {
-    console.log('ports', JSON.stringify(ports));
-  })
+// If you know your port number then enter below if, you don't
+//  uncommecnt the listPorts function below to print the serial ports
+//  attached to your computer. You do need to have the FTDI VCP driver
+//  installed.
+let portName = 'COM4';
+// ourBoard.listPorts()
+//   .then((ports) => {
+//     console.log('ports', JSON.stringify(ports));
+//   });
+
+// You can also pass the port name as a command line argument!
+// i.e. windows
+//  > node .\examples\getStreaming\getStreaming.js COM5
+//    REMBEMER THE COM NUMBER CHANGES ON WINDOWS!!
+// i.e. macOS
+//  $ node examples/getStreaming/getStreaming.js /dev/tty/usbserial-DB008JAM
+const myArgs = process.argv.slice(2);
+if (myArgs.length === 1) {
+  portName = myArgs[0];
+}
 
 ourBoard.on('sample', (sample) => {
   /** Work with sample */
@@ -40,21 +56,20 @@ ourBoard.on('sample', (sample) => {
      * Only works if one board is plugged in
      * i.e. ourBoard.connect(portName).....
      */
-ourBoard.connect('COM5') // Port name is a serial port name, see `.listPorts()`
+ourBoard.connect(portName) // Port name is a serial port name, see `.listPorts()`
   .then(() => {
-    console.log("connected");
     return ourBoard.syncRegisterSettings();
   })
   .then((cs) => {
-		return ourBoard.streamStart();
+	  return ourBoard.streamStart();
   })
   .catch((err) => {
-		console.log('err', err);
-		return ourBoard.streamStart();
+  	console.log('err', err);
+	  return ourBoard.streamStart();
   })
   .catch((err) => {
-		console.log('fatal err', err);
-		process.exit(0);
+	  console.log('fatal err', err);
+	  process.exit(0);
   });
 
 function exitHandler (options, err) {
