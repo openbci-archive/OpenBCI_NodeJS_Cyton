@@ -187,7 +187,7 @@ Sample properties:
 * `startByte` (`Number` should be `0xA0`)
 * `sampleNumber` (a `Number` between 0-255)
 * `channelData` (channel data indexed at 0 filled with floating point `Numbers` in Volts) if `sendCounts` is false
-* `channelDataCounts` (channel data indexed at 0 filled with floating point `Numbers` in Volts) if `sendCounts` is true
+* `channelDataCounts` (channel data indexed at 0 filled with un scaled interger `Numbers` in raw ADS counts) if `sendCounts` is true
 * `accelData` (`Array` with X, Y, Z accelerometer values when new data available) if `sendCounts` is false
 * `accelDataCounts` (`Array` with X, Y, Z accelerometer values when new data available) Only present if `sendCounts` is true
 * `auxData` (`Buffer` filled with either 2 bytes (if time synced) or 6 bytes (not time synced))
