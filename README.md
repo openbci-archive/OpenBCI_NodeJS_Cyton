@@ -15,31 +15,36 @@ The purpose of this module is to **get connected** and **start streaming** as fa
 Python researcher or developer? Check out how easy it is to [get access to the entire API in the Python example](examples/python)!
 
 ### Table of Contents:
+
 ---
 
 1. [Installation](#install)
 2. [TL;DR](#tldr)
 3. [Cyton (32bit Board)](#cyton)
-  1. [About](#about)
-  2. [General Overview](#general-overview)
-  3. [SDK Reference Guide](#sdk-reference-guide)
-    * [Constructor](#constructor)
-    * [Methods](#method)
-    * [Events](#event)
-    * [Constants](#constants)
-6. [Interfacing With Other Tools](#interfacing-with-other-tools)
-7. [Developing](#developing)
-8. [Testing](#developing-testing)
-9. [Contribute](#contribute)
-10. [License](#license)
-11. [Roadmap](#roadmap)
+4. [About](#about)
+5. [General Overview](#general-overview)
+6. [SDK Reference Guide](#sdk-reference-guide)
+   - [Constructor](#constructor)
+   - [Methods](#method)
+   - [Events](#event)
+   - [Constants](#constants)
+7. [Interfacing With Other Tools](#interfacing-with-other-tools)
+8. [Developing](#developing)
+9. [Testing](#developing-testing)
+10. [Contribute](#contribute)
+11. [License](#license)
+12. [Roadmap](#roadmap)
 
 ### <a name="install"></a> Installation:
+
 ```
-npm install openbci-cyton
+npm install @openbci/cyton
 ```
+
 #### serialport dependency
+
 If you encounter this error when trying to run:
+
 ```
 Error: The module '/path/to/your/project/node_modules/serialport/build/Release/serialport.node'
 was compiled against a different Node.js version using
@@ -47,14 +52,19 @@ NODE_MODULE_VERSION 48. This version of Node.js requires
 NODE_MODULE_VERSION 51. Please try re-compiling or re-installing
 the module (for instance, using `npm rebuild` or`npm install`).
 ```
+
 ...the issue can be resolved by running:
+
 ```
 npm rebuild --build-from-source
 ```
+
 ### <a name="tldr"></a> TL;DR:
+
 Get connected and [start streaming right now with the example code](examples/getStreaming/getStreaming.js).
 
 #### Cyton (8 and 16 channel boards)
+
 ```ecmascript 6
 const Cyton = require('openbci-cyton');
 const ourBoard = new Cyton();
@@ -75,15 +85,15 @@ ourBoard.connect(portName) // Port name is a serial port name, see `.listPorts()
 });
 ```
 
-
 # <a name="cyton"></a> Cyton
 
 ## <a name="about"></a> About:
+
 Want to know if the module really works? Check out some projects and organizations using it:
 
-* [_OpenEXP_](https://github.com/openexp/OpenEXP): an open-source desktop app for running experiments and collecting behavioral and physiological data.
-* [_Thinker_](http://www.pushtheworldllc.com/): a project building the world's first brainwave-word database.
-* [_NeuroJS_](https://github.com/NeuroJS): a community dedicated to Neuroscience research using JavaScript, they have several great examples.
+- [_OpenEXP_](https://github.com/openexp/OpenEXP): an open-source desktop app for running experiments and collecting behavioral and physiological data.
+- [_Thinker_](http://www.pushtheworldllc.com/): a project building the world's first brainwave-word database.
+- [_NeuroJS_](https://github.com/NeuroJS): a community dedicated to Neuroscience research using JavaScript, they have several great examples.
 
 Still not satisfied it works?? Check out this [detailed report](http://s132342840.onlinehome.us/pushtheworld/files/voltageVerificationTestPlanAndResults.pdf) that scientifically validates the output voltages of this module.
 
@@ -93,21 +103,21 @@ How are you still doubting and not using this already? Fine, go look at some of 
 
 Python researcher or developer? Check out how easy it is to [get access to the entire API in the Python example](examples/python)!
 
-Initialization
---------------
+## Initialization
 
 Initializing the board:
 
 ```js
-const Cyton = require('openbci-cyton');
+const Cyton = require("openbci-cyton");
 const ourBoard = new Cyton();
 ```
+
 Go [checkout out the get streaming example](examples/getStreaming/getStreaming.js)!
 
 For initializing with options, such as verbose print outs:
 
 ```js
-const Cyton = require('openbci-cyton');
+const Cyton = require("openbci-cyton");
 const ourBoard = new Cyton({
   verbose: true
 });
@@ -116,114 +126,130 @@ const ourBoard = new Cyton({
 Or if you don't have a board and want to use synthetic data:
 
 ```js
-const Cyton = require('openbci-cyton');
+const Cyton = require("openbci-cyton");
 const ourBoard = new Cyton({
   simulate: true
 });
 ```
 
 Have a daisy?:
+
 ```js
-var Cyton = require('openbci-cyton');
+var Cyton = require("openbci-cyton");
 var ourBoard = new Cyton({
-    boardType: `daisy`,
-    hardSet: true
+  boardType: `daisy`,
+  hardSet: true
 });
 ```
+
 Go [checkout out the get streaming with daisy example](examples/getStreamingDaisy/getStreamingDaisy.js)!
 
 Another useful way to start the simulator:
+
 ```js
-const Cyton = require('openbci-cyton');
-const k = require('openbci-utilities').Constants;
+const Cyton = require("openbci-cyton");
+const k = require("openbci-utilities").Constants;
 const ourBoard = new Cyton();
-ourBoard.connect(k.OBCISimulatorPortName) // This will set `simulate` to true
-    .then((boardSerial) => {
-        ourBoard.on('ready',() => {
-            /** Start streaming, reading registers, what ever your heart desires  */
-        });
-    }).catch((err) => {
-        /** Handle connection errors */
+ourBoard
+  .connect(k.OBCISimulatorPortName) // This will set `simulate` to true
+  .then(boardSerial => {
+    ourBoard.on("ready", () => {
+      /** Start streaming, reading registers, what ever your heart desires  */
     });
+  })
+  .catch(err => {
+    /** Handle connection errors */
+  });
 ```
 
 You can also start the simulator by sending [`.connect(portName)`](#method-connect) with `portName` equal to [`'OpenBCISimulator'`](#constants-obcisimulatorportname).
 
 or if you are using ES6:
+
 ```js
-import Cyton from 'openbci-cyton';
-import { Constants } from 'openbci-utilities';
+import Cyton from "openbci-cyton";
+import { Constants } from "openbci-utilities";
 const ourBoard = new Cyton();
 ourBoard.connect(Constants.OBCISimulatorPortName);
 ```
 
 To debug, it's amazing, do:
+
 ```js
-const Cyton = require('openbci-cyton');
+const Cyton = require("openbci-cyton");
 const ourBoard = new Cyton({
-    debug: true
+  debug: true
 });
 ```
+
 Go [checkout out the debug example](examples/debug/debug.js)!
 
-'ready' event
-------------
+## 'ready' event
 
 You MUST wait for the 'ready' event to be emitted before streaming/talking with the board. The ready happens asynchronously
 so installing the 'sample' listener and writing before the ready event might result in... nothing at all.
 
 ```js
-const Cyton = require('openbci-cyton');
+const Cyton = require("openbci-cyton");
 const ourBoard = new Cyton();
-ourBoard.connect(portName).then(function(boardSerial) {
-   /** Start streaming, reading registers, what ever your heart desires  */
-}).catch(function(err) {
+ourBoard
+  .connect(portName)
+  .then(function(boardSerial) {
+    /** Start streaming, reading registers, what ever your heart desires  */
+  })
+  .catch(function(err) {
     /** Handle connection errors */
-});            
+  });
 ```
 
-Sample properties:
-------------------
-* `startByte` (`Number` should be `0xA0`)
-* `sampleNumber` (a `Number` between 0-255)
-* `channelData` (channel data indexed at 0 filled with floating point `Numbers` in Volts) if `sendCounts` is false
-* `channelDataCounts` (channel data indexed at 0 filled with un scaled interger `Numbers` in raw ADS counts) if `sendCounts` is true
-* `accelData` (`Array` with X, Y, Z accelerometer values when new data available) if `sendCounts` is false
-* `accelDataCounts` (`Array` with X, Y, Z accelerometer values when new data available) Only present if `sendCounts` is true
-* `auxData` (`Buffer` filled with either 2 bytes (if time synced) or 6 bytes (not time synced))
-* `stopByte` (`Number` should be `0xCx` where x is 0-15 in hex)
-* `boardTime` (`Number` the raw board time)
-* `timestamp` (`Number` the `boardTime` plus the NTP calculated offset)
+## Sample properties:
+
+- `startByte` (`Number` should be `0xA0`)
+- `sampleNumber` (a `Number` between 0-255)
+- `channelData` (channel data indexed at 0 filled with floating point `Numbers` in Volts) if `sendCounts` is false
+- `channelDataCounts` (channel data indexed at 0 filled with un scaled interger `Numbers` in raw ADS counts) if `sendCounts` is true
+- `accelData` (`Array` with X, Y, Z accelerometer values when new data available) if `sendCounts` is false
+- `accelDataCounts` (`Array` with X, Y, Z accelerometer values when new data available) Only present if `sendCounts` is true
+- `auxData` (`Buffer` filled with either 2 bytes (if time synced) or 6 bytes (not time synced))
+- `stopByte` (`Number` should be `0xCx` where x is 0-15 in hex)
+- `boardTime` (`Number` the raw board time)
+- `timestamp` (`Number` the `boardTime` plus the NTP calculated offset)
 
 The power of this module is in using the sample emitter, to be provided with samples to do with as you wish.
 
-To get a ['sample'](#event-sample) event, you need to:
--------------------------------------
+## To get a ['sample'](#event-sample) event, you need to:
+
 1. Call [`.connect(serialPortName)`](#method-connect)
 2. Install the ['ready'](#event-ready) event emitter on resolved promise
 3. In callback for ['ready'](#event-ready) emitter, call [`streamStart()`](#method-stream-start)
 4. Install the ['sample'](#event-sample) event emitter
+
 ```js
-const Cyton = require('openbci-cyton');
+const Cyton = require("openbci-cyton");
 const ourBoard = new Cyton();
-ourBoard.connect(portName).then(function() {
-  ourBoard.streamStart();
-  ourBoard.on('sample',function(sample) {
-    /** Work with sample */
-  });
-}).catch(function(err) {
+ourBoard
+  .connect(portName)
+  .then(function() {
+    ourBoard.streamStart();
+    ourBoard.on("sample", function(sample) {
+      /** Work with sample */
+    });
+  })
+  .catch(function(err) {
     /** Handle connection errors */
-});            
+  });
 ```
+
 Close the connection with [`.streamStop()`](#method-stream-stop) and disconnect with [`.disconnect()`](#method-disconnect)
+
 ```js
-const Cyton = require('openbci-cyton');
+const Cyton = require("openbci-cyton");
 const ourBoard = new Cyton();
 ourBoard.streamStop().then(ourBoard.disconnect());
 ```
 
-Time Syncing
-------------
+## Time Syncing
+
 You must be using OpenBCI firmware version 2 in order to do time syncing. After you [`.connect()`](#method-connect) and send a [`.softReset()`](#method-soft-reset), you can call [`.usingVersionTwoFirmware()`](#method-using-version-two-firmware) to get a boolean response as to if you are using `v1` or `v2`.
 
 Now using firmware `v2`, the fun begins! We synchronize the Board's clock with the module's time. In firmware `v2` we leverage samples with time stamps and _ACKs_ from the Dongle to form a time synchronization strategy. Time syncing has been verified to +/- 4ms and a test report is on the way. We are still working on the synchronize of this module and an NTP server, this is an open call for any NTP experts out there! With a global NTP server you could use several different devices and all sync to the same time server. That way you can really do some serious cloud computing!
@@ -231,11 +257,12 @@ Now using firmware `v2`, the fun begins! We synchronize the Board's clock with t
 Keep your resync interval above 50ms. While it's important to resync every couple minutes due to drifting of clocks, please do not try to sync without getting the last sync event! We can only support one sync operation at a time!
 
 Using local computer time:
+
 ```js
-const Cyton = require('openbci-cyton');
-const k = require('openbci-utilities').Constants;
+const Cyton = require("openbci-cyton");
+const k = require("openbci-utilities").Constants;
 const ourBoard = new Cyton({
-  verbose:true
+  verbose: true
 });
 
 const resyncPeriodMin = 5; // re sync every five minutes
@@ -244,77 +271,84 @@ let sampleRate = k.OBCISampleRate250; // Default to 250, ALWAYS verify with a ca
 let timeSyncPossible = false;
 
 // Call to connect
-ourBoard.connect(portName).then(() => {
-  // Get the sample rate after 'ready'
-  sampleRate = ourBoard.sampleRate();
-  // Find out if you can even time sync, you must be using v2 and this is only accurate after a `.softReset()` call which is called internally on `.connect()`. We parse the `.softReset()` response for the presence of firmware version 2 properties.
-  timeSyncPossible = ourBoard.usingVersionTwoFirmware();
-    
-  ourBoard.streamStart()
-    .then(() => {
-      /** Start streaming command sent to board. */
-    }).catch(err => {
-      console.log(`stream start: ${err}`);
-    });
+ourBoard
+  .connect(portName)
+  .then(() => {
+    // Get the sample rate after 'ready'
+    sampleRate = ourBoard.sampleRate();
+    // Find out if you can even time sync, you must be using v2 and this is only accurate after a `.softReset()` call which is called internally on `.connect()`. We parse the `.softReset()` response for the presence of firmware version 2 properties.
+    timeSyncPossible = ourBoard.usingVersionTwoFirmware();
 
-  // PTW recommends sample driven  
-  ourBoard.on('sample',sample => {
-    // Resynchronize every every 5 minutes
-    if (sample._count % (sampleRate * resyncPeriodMin * secondsInMinute) === 0) {
-      ourBoard.syncClocksFull()
-        .then(syncObj => {
+    ourBoard
+      .streamStart()
+      .then(() => {
+        /** Start streaming command sent to board. */
+      })
+      .catch(err => {
+        console.log(`stream start: ${err}`);
+      });
+
+    // PTW recommends sample driven
+    ourBoard.on("sample", sample => {
+      // Resynchronize every every 5 minutes
+      if (
+        sample._count %
+          (sampleRate * resyncPeriodMin * secondsInMinute) ===
+        0
+      ) {
+        ourBoard.syncClocksFull().then(syncObj => {
           // Sync was successful
           if (syncObj.valid) {
             // Log the object to check it out!
-            console.log(`syncObj`,syncObj);
-    
+            console.log(`syncObj`, syncObj);
+
             // Sync was not successful
-            } else {
-              // Retry it
-              console.log(`Was not able to sync, please retry?`);
-            }
+          } else {
+            // Retry it
+            console.log(`Was not able to sync, please retry?`);
+          }
         });
-    }
-    
-    if (sample.timeStamp) { // true after the first sync
-      console.log(`NTP Time Stamp ${sample.timeStamp}`);
-    }
-    
+      }
+
+      if (sample.timeStamp) {
+        // true after the first sync
+        console.log(`NTP Time Stamp ${sample.timeStamp}`);
+      }
+    });
+  })
+  .catch(err => {
+    console.log(`connect: ${err}`);
   });
-})
-.catch(err => {
-  console.log(`connect: ${err}`);
-});
 ```
 
-Auto-finding boards
--------------------
+## Auto-finding boards
+
 You must have the OpenBCI board connected to the PC before trying to automatically find it.
 
 If a port is not automatically found, then call [`.listPorts()`](#method-list-ports) to get a list of all serial ports this would be a good place to present a drop down picker list to the user, so they may manually select the serial port name.
 
 ```js
-const Cyton = require('openbci-cyton');
+const Cyton = require("openbci-cyton");
 const ourBoard = new Cyton();
 ourBoard.autoFindOpenBCIBoard().then(portName => {
-    if(portName) {
-        /**
-        * Connect to the board with portName
-        * i.e. ourBoard.connect(portName).....
-        */
-    } else {
-        /**Unable to auto find OpenBCI board*/
-    }
+  if (portName) {
+    /**
+     * Connect to the board with portName
+     * i.e. ourBoard.connect(portName).....
+     */
+  } else {
+    /**Unable to auto find OpenBCI board*/
+  }
 });
 ```
 
 Note: [`.autoFindOpenBCIBoard()`](#method-auto-find-open-bci-board) will return the name of the Simulator if you instantiate with option `simulate: true`.
 
-Auto Test - (Using impedance to determine signal quality)
----------------------------------------------------------
+## Auto Test - (Using impedance to determine signal quality)
+
 Measuring impedance is a vital tool in ensuring great data is collected.
 
-**_IMPORTANT!_** Measuring impedance takes time, so *only test what you must*
+**_IMPORTANT!_** Measuring impedance takes time, so _only test what you must_
 
 Your OpenBCI board will have electrodes hooked up to either a P input, N input or in some cases both inputs.
 
@@ -329,27 +363,34 @@ A configuration array looks like, for an 8 channel board, `['-','N','n','p','P',
 
 Where there are the same number of elements as channels and each element can be either:
 
-* `p` or `P` (only test P input)
-* `n` or `N` (only test N input)
-* `b` or `B` (test both inputs) (takes 66% longer to run then previous two `p` or `n`)
-* `-` (ignore channel)
+- `p` or `P` (only test P input)
+- `n` or `N` (only test N input)
+- `b` or `B` (test both inputs) (takes 66% longer to run then previous two `p` or `n`)
+- `-` (ignore channel)
 
 Without further ado, here is an example:
+
 ```js
-const Cyton = require('openbci-cyton');
+const Cyton = require("openbci-cyton");
 const ourBoard = new Cyton();
-ourBoard.connect(portName).then(function(boardSerial) {
+ourBoard
+  .connect(portName)
+  .then(function(boardSerial) {
     ourBoard.streamStart();
-    ourBoard.once('impedanceArray', impedanceArray => {
-        /** Work with impedance Array */
+    ourBoard.once("impedanceArray", impedanceArray => {
+      /** Work with impedance Array */
     });
-    ourBoard.impedanceTestChannels(['n','N','n','p','P','p','b','B']).catch(err => console.log(err));
-}).catch(function(err) {
+    ourBoard
+      .impedanceTestChannels(["n", "N", "n", "p", "P", "p", "b", "B"])
+      .catch(err => console.log(err));
+  })
+  .catch(function(err) {
     /** Handle connection errors */
-});
+  });
 ```
 
 But wait! What is this `impedanceArray`? An Array of Objects, for each object:
+
 ```
 [{
     channel: 1,
@@ -369,15 +410,15 @@ But wait! What is this `impedanceArray`? An Array of Objects, for each object:
 
 Where:
 
-* *channel* is the channel number (`impedanceArray[0]` is channel 1, `impedanceArray[6]` is channel 7)
-* *P* is the P input data (Note: P is capitalized)
-  * *raw* is an impedance value resulting from the Goertzel algorithm.
-  * *text* is a text interpretation of the `average`
-    * **Good** impedance is < 5k Ohms
-    * **Ok** impedance is 5 to 10k Ohms
-    * **Bad** impedance is > 10k Ohms
-    * **None** impedance is > 1M Ohms
-* *N* is the N input data (Note: N is capitalized) (see above for what N object consists of)
+- _channel_ is the channel number (`impedanceArray[0]` is channel 1, `impedanceArray[6]` is channel 7)
+- _P_ is the P input data (Note: P is capitalized)
+  - _raw_ is an impedance value resulting from the Goertzel algorithm.
+  - _text_ is a text interpretation of the `average`
+    - **Good** impedance is < 5k Ohms
+    - **Ok** impedance is 5 to 10k Ohms
+    - **Bad** impedance is > 10k Ohms
+    - **None** impedance is > 1M Ohms
+- _N_ is the N input data (Note: N is capitalized) (see above for what N object consists of)
 
 To run an impedance test on all inputs, one channel at a time:
 
@@ -405,7 +446,9 @@ ourBoard.connect(portName).then(function(boardSerial) {
 See Reference Guide for a complete list of impedance tests.
 
 ## <a name="sdk-reference-guide"></a> SDK Reference Guide:
----------------
+
+---
+
 ### <a name="constructor"></a> Constructor:
 
 #### <a name="init"></a> Cyton (options)
@@ -416,37 +459,37 @@ Create new instance of an Cyton board.
 
 Board optional configurations.
 
-* `baudRate` {Number} - Baud Rate, defaults to 115200. Manipulating this is allowed if firmware on board has been previously configured.
-* `boardType` {String} - Specifies type of OpenBCI board (3 possible boards)
-  * `default` - 8 Channel OpenBCI board (Default)
-  * `daisy` - 8 Channel board with Daisy Module - 16 Channels
-* `hardSet` {Boolean} - Recommended if using `daisy` board! For some reason, the `daisy` is sometimes not picked up by the module so you can set `hardSet` to true which will ensure the daisy is picked up. (Default `false`)
-* `simulate` {Boolean} - Full functionality, just mock data. Must attach Daisy module by setting `simulatorDaisyModuleAttached` to `true` in order to get 16 channels. (Default `false`)
-* `simulatorBoardFailure` {Boolean} - Simulates board communications failure. This occurs when the RFduino on the board is not polling the RFduino on the dongle. (Default `false`)
-* `simulatorDaisyModuleAttached` {Boolean} - Simulates a daisy module being attached to the OpenBCI board. This is useful if you want to test how your application reacts to a user requesting 16 channels but there is no daisy module actually attached, or vice versa, where there is a daisy module attached and the user only wants to use 8 channels. (Default `false`)
-* `simulatorFirmwareVersion` {String} - Allows the simulator to use firmware version 2 features. (2 Possible Options)
-  * `v1` - Firmware Version 1 (Default)
-  * `v2` - Firmware Version 2
-* `simulatorFragmentation` {String} - Specifies how to break packets to simulate fragmentation, which occurs commonly in real devices.  It is recommended to test code with this enabled.  (4 Possible Options)
-  * `none` - do not fragment packets; output complete chunks immediately when produced (Default)
-  * `random` - output random small chunks of data interspersed with full buffers
-  * `fullBuffers` - allow buffers to fill up until latency timer has expired
-  * `oneByOne` - output each byte separately
-* `simulatorLatencyTime` {Number} - The time in milliseconds to wait before sending partially full buffers of data, if `simulatorFragmentation` is specified.  (Default `16`)
-* `simulatorBufferSize` {Number} - The size of a full buffer of data, if `simulatorFragmentation` is specified. (Default `4096`)
-* `simulatorHasAccelerometer` - {Boolean} - Sets simulator to send packets with accelerometer data. (Default `true`)
-* `simulatorInjectAlpha` - {Boolean} - Inject a 10Hz alpha wave in Channels 1 and 2 (Default `true`)
-* `simulatorInjectLineNoise` {String} - Injects line noise on channels. (3 Possible Options)
-  * `60Hz` - 60Hz line noise (Default) [America]
-  * `50Hz` - 50Hz line noise [Europe]
-  * `none` - Do not inject line noise.
-* `simulatorSampleRate` {Number} - The sample rate to use for the simulator. Simulator will set to 125 if `simulatorDaisyModuleAttached` is set `true`. However, setting this option overrides that setting and this sample rate will be used. (Default is `250`)
-* `simulatorSerialPortFailure` {Boolean} - Simulates not being able to open a serial connection. Most likely due to a OpenBCI dongle not being plugged in.
-* `sntpTimeSync` - {Boolean} Syncs the module up with an SNTP time server and uses that as single source of truth instead of local computer time. If you are running experiments on your local computer, keep this `false`. (Default `false`)
-* `sntpTimeSyncHost` - {String} The sntp server to use, can be either sntp or ntp (Defaults `pool.ntp.org`).
-* `sntpTimeSyncPort` - {Number} The port to access the sntp server (Defaults `123`)
-* `verbose` {Boolean} - Print out useful debugging events (Default `false`)
-* `debug` {Boolean} - Print out a raw dump of bytes sent and received (Default `false`)
+- `baudRate` {Number} - Baud Rate, defaults to 115200. Manipulating this is allowed if firmware on board has been previously configured.
+- `boardType` {String} - Specifies type of OpenBCI board (3 possible boards)
+  - `default` - 8 Channel OpenBCI board (Default)
+  - `daisy` - 8 Channel board with Daisy Module - 16 Channels
+- `hardSet` {Boolean} - Recommended if using `daisy` board! For some reason, the `daisy` is sometimes not picked up by the module so you can set `hardSet` to true which will ensure the daisy is picked up. (Default `false`)
+- `simulate` {Boolean} - Full functionality, just mock data. Must attach Daisy module by setting `simulatorDaisyModuleAttached` to `true` in order to get 16 channels. (Default `false`)
+- `simulatorBoardFailure` {Boolean} - Simulates board communications failure. This occurs when the RFduino on the board is not polling the RFduino on the dongle. (Default `false`)
+- `simulatorDaisyModuleAttached` {Boolean} - Simulates a daisy module being attached to the OpenBCI board. This is useful if you want to test how your application reacts to a user requesting 16 channels but there is no daisy module actually attached, or vice versa, where there is a daisy module attached and the user only wants to use 8 channels. (Default `false`)
+- `simulatorFirmwareVersion` {String} - Allows the simulator to use firmware version 2 features. (2 Possible Options)
+  - `v1` - Firmware Version 1 (Default)
+  - `v2` - Firmware Version 2
+- `simulatorFragmentation` {String} - Specifies how to break packets to simulate fragmentation, which occurs commonly in real devices. It is recommended to test code with this enabled. (4 Possible Options)
+  - `none` - do not fragment packets; output complete chunks immediately when produced (Default)
+  - `random` - output random small chunks of data interspersed with full buffers
+  - `fullBuffers` - allow buffers to fill up until latency timer has expired
+  - `oneByOne` - output each byte separately
+- `simulatorLatencyTime` {Number} - The time in milliseconds to wait before sending partially full buffers of data, if `simulatorFragmentation` is specified. (Default `16`)
+- `simulatorBufferSize` {Number} - The size of a full buffer of data, if `simulatorFragmentation` is specified. (Default `4096`)
+- `simulatorHasAccelerometer` - {Boolean} - Sets simulator to send packets with accelerometer data. (Default `true`)
+- `simulatorInjectAlpha` - {Boolean} - Inject a 10Hz alpha wave in Channels 1 and 2 (Default `true`)
+- `simulatorInjectLineNoise` {String} - Injects line noise on channels. (3 Possible Options)
+  - `60Hz` - 60Hz line noise (Default) [America]
+  - `50Hz` - 50Hz line noise [Europe]
+  - `none` - Do not inject line noise.
+- `simulatorSampleRate` {Number} - The sample rate to use for the simulator. Simulator will set to 125 if `simulatorDaisyModuleAttached` is set `true`. However, setting this option overrides that setting and this sample rate will be used. (Default is `250`)
+- `simulatorSerialPortFailure` {Boolean} - Simulates not being able to open a serial connection. Most likely due to a OpenBCI dongle not being plugged in.
+- `sntpTimeSync` - {Boolean} Syncs the module up with an SNTP time server and uses that as single source of truth instead of local computer time. If you are running experiments on your local computer, keep this `false`. (Default `false`)
+- `sntpTimeSyncHost` - {String} The sntp server to use, can be either sntp or ntp (Defaults `pool.ntp.org`).
+- `sntpTimeSyncPort` - {Number} The port to access the sntp server (Defaults `123`)
+- `verbose` {Boolean} - Print out useful debugging events (Default `false`)
+- `debug` {Boolean} - Print out a raw dump of bytes sent and received (Default `false`)
 
 **Note, we have added support for either all lowercase OR camel case for the options, use whichever style you prefer.**
 
@@ -484,7 +527,7 @@ A number (1-16) specifying which channel you want to turn on.
 
 Send a channel setting command to the board.
 
-**_channelNumber_**  
+**_channelNumber_**
 
 Determines which channel to set. It's a 'Number' (1-16)
 
@@ -515,8 +558,9 @@ Select to connect (`true`) all channels' N inputs to SRB1. This effects all pins
 **_Returns_** a promise fulfilled if proper commands sent to the write queue, rejects on bad input or no board.
 
 **Example**
+
 ```js
-ourBoard.channelSet(2,false,24,'normal',true,true,false);
+ourBoard.channelSet(2, false, 24, "normal", true, true, false);
 // sends ['x','2','0','6','0','1','1','0','X'] to the command queue
 ```
 
@@ -536,7 +580,7 @@ Calls all [`.printPacketsBad()`](#method-print-packets-bad), [`.printPacketsRead
 
 #### <a name="method-disconnect"></a> .disconnect()
 
-Closes the serial port opened by [`.connect()`](#method-connect).  Waits for stop streaming command to be sent if currently streaming.
+Closes the serial port opened by [`.connect()`](#method-connect). Waits for stop streaming command to be sent if currently streaming.
 
 **_Returns_** a promise, fulfilled by a successful close of the serial port object, rejected otherwise.
 
@@ -562,14 +606,14 @@ A number specifying which channel you want to get data on. Only 1-8 at this time
 
 Used to sync the module and board to `boardType`.
 
-**Note: This has the potential to change the way data is parsed** 
- 
+**Note: This has the potential to change the way data is parsed**
+
 **_boardType_**
 
 A String indicating the number of channels.
 
-* `default` - Default board: Sample rate is `250Hz` and number of channels is `8`. 
-* `daisy` - Daisy board: Sample rate is `125Hz` and number of channels is `16`.
+- `default` - Default board: Sample rate is `250Hz` and number of channels is `8`.
+- `daisy` - Daisy board: Sample rate is `125Hz` and number of channels is `16`.
 
 **_Returns_** a promise, fulfilled if both the board and module are the requested `boardType`, rejects otherwise.
 
@@ -581,7 +625,7 @@ Don't forget to install the ['impedanceArray'](#event-impedance-array) emitter t
 
 **Note, you must be connected in order to set the test commands. Also this method can take up to 5 seconds to send all commands!**
 
-**_Returns_** a promise upon completion of test.  
+**_Returns_** a promise upon completion of test.
 
 #### <a name="method-impedance-test-channels"></a> .impedanceTestChannels(arrayOfCommands)
 
@@ -589,16 +633,16 @@ Don't forget to install the ['impedanceArray'](#event-impedance-array) emitter t
 
 The array of configurations where there are the same number of elements as channels and each element can be either:
 
-* `p` or `P` (only test P input)
-* `n` or `N` (only test N input)
-* `b` or `B` (test both inputs) (takes 66% longer to run then previous two `p` or `n`)
-* `-` (ignore channel)
+- `p` or `P` (only test P input)
+- `n` or `N` (only test N input)
+- `b` or `B` (test both inputs) (takes 66% longer to run then previous two `p` or `n`)
+- `-` (ignore channel)
 
 Don't forget to install the `impedanceArray` emitter to receive the impendances!
 
 **Note, you must be connected in order to set the test commands. Also this method can take up to 5 seconds to send all commands!**
 
-**_Returns_** a promise upon completion of test.  
+**_Returns_** a promise upon completion of test.
 
 #### <a name="method-impedance-test-channel"></a> .impedanceTestChannel(channelNumber)
 
@@ -611,34 +655,41 @@ A Number, specifies which channel you want to test.
 **_Returns_** a promise that resolves a single channel impedance object.
 
 **Example**
+
 ```js
-const Cyton = require('openbci-cyton');
+const Cyton = require("openbci-cyton");
 const ourBoard = new Cyton();
-ourBoard.connect(portName).then(function(boardSerial) {
-    ourBoard.on('ready',function() {
-        ourBoard.streamStart();
-        ourBoard.impedanceTestChannel(1)
-            .then(impedanceObject => {
-                /** Do something with impedanceObject! */
-            })
-            .catch(err => console.log(err));
+ourBoard
+  .connect(portName)
+  .then(function(boardSerial) {
+    ourBoard.on("ready", function() {
+      ourBoard.streamStart();
+      ourBoard
+        .impedanceTestChannel(1)
+        .then(impedanceObject => {
+          /** Do something with impedanceObject! */
+        })
+        .catch(err => console.log(err));
     });
-}).catch(function(err) {
+  })
+  .catch(function(err) {
     /** Handle connection errors */
-});
+  });
 ```
+
 Where an impedance for this method call would look like:
+
 ```json
 {
-    "channel": 1,
-    "P": {
-        "raw": 2394.45,
-        "text": "good"
-    },
-    "N": {
-        "raw": 7694.45,
-        "text": "ok"
-    }
+  "channel": 1,
+  "P": {
+    "raw": 2394.45,
+    "text": "good"
+  },
+  "N": {
+    "raw": 7694.45,
+    "text": "ok"
+  }
 }
 ```
 
@@ -653,34 +704,41 @@ A Number, specifies which channel you want to test.
 **_Returns_** a promise that resolves a single channel impedance object.
 
 **Example**
+
 ```js
-const Cyton = require('openbci-cyton');
+const Cyton = require("openbci-cyton");
 const ourBoard = new Cyton();
-ourBoard.connect(portName).then(() => {
-    ourBoard.on('ready', () => {
-        ourBoard.streamStart();
-        ourBoard.impedanceTestChannelInputP(1)
-            .then(impedanceObject => {
-                /** Do something with impedanceObject! */
-            })
-            .catch(err => console.log(err));
+ourBoard
+  .connect(portName)
+  .then(() => {
+    ourBoard.on("ready", () => {
+      ourBoard.streamStart();
+      ourBoard
+        .impedanceTestChannelInputP(1)
+        .then(impedanceObject => {
+          /** Do something with impedanceObject! */
+        })
+        .catch(err => console.log(err));
     });
-}).catch(function(err) {
+  })
+  .catch(function(err) {
     /** Handle connection errors */
-});
+  });
 ```
+
 Where an impedance for this method call would look like:
+
 ```json
 {
-    "channel": 1,
-    "P": {
-        "raw": 2394.45,
-        "text": "good"
-    },
-    "N": {
-        "raw": -1,
-        "text": "init"
-    }
+  "channel": 1,
+  "P": {
+    "raw": 2394.45,
+    "text": "good"
+  },
+  "N": {
+    "raw": -1,
+    "text": "init"
+  }
 }
 ```
 
@@ -695,6 +753,7 @@ A Number, specifies which channel you want to test.
 **_Returns_** a promise that resolves a single channel impedance object.
 
 **Example**
+
 ```ecmascript 6
 const Cyton = require('openbci-cyton');
 const ourBoard = new Cyton();
@@ -710,18 +769,20 @@ ourBoard.connect(portName).then(() => {
 }).catch(err => console.log(err));
 
 ```
+
 Where an impedance for this method call would look like:
+
 ```json
 {
-    "channel": 1,
-    "P": {
-        "raw": -1,
-        "text": "init"
-    },
-    "N": {
-        "raw": 7694.45,
-        "text": "ok"
-    }
+  "channel": 1,
+  "P": {
+    "raw": -1,
+    "text": "init"
+  },
+  "N": {
+    "raw": 7694.45,
+    "text": "ok"
+  }
 }
 ```
 
@@ -763,16 +824,16 @@ Get the current number of channels available to use. (i.e. 8 or 16).
 
 ### <a name="method-override-info-for-board-type"></a> .overrideInfoForBoardType(boardType)
 
-Set the info property for board type. 
+Set the info property for board type.
 
-**Note: This has the potential to change the way data is parsed** 
- 
+**Note: This has the potential to change the way data is parsed**
+
 **_boardType_**
 
 A String indicating the number of channels.
 
-* `default` - Default board: Sample rate is `250Hz` and number of channels is `8`. 
-* `daisy` - Daisy board: Sample rate is `125Hz` and number of channels is `16`.
+- `default` - Default board: Sample rate is `250Hz` and number of channels is `8`.
+- `daisy` - Daisy board: Sample rate is `125Hz` and number of channels is `16`.
 
 ### <a name="method-print-bytes-in"></a> .printBytesIn()
 
@@ -880,15 +941,15 @@ Start logging to the SD card. If you are not streaming when you send this comman
 
 The duration you want to log SD information for. Opens a new SD file to write into. Limited to:
 
- * `14sec` - 14 seconds
- * `5min` - 5 minutes
- * `15min` - 15 minutes
- * `30min` - 30 minutes
- * `1hour` - 1 hour
- * `2hour` - 2 hour
- * `4hour` - 4 hour
- * `12hour` - 12 hour
- * `24hour` - 24 hour
+- `14sec` - 14 seconds
+- `5min` - 5 minutes
+- `15min` - 15 minutes
+- `30min` - 30 minutes
+- `1hour` - 1 hour
+- `2hour` - 2 hour
+- `4hour` - 4 hour
+- `12hour` - 12 hour
+- `24hour` - 24 hour
 
 **Note: You must have the proper type of SD card inserted into the board for logging to work.**
 
@@ -975,6 +1036,7 @@ Send the command to tell the board to start the syncing protocol. Must be connec
 **Note, this functionality requires OpenBCI Firmware Version 2.0**
 
 **_Returns_** {Promise} resolves if `synced` event is emitted, rejects if not connected or using firmware v2. Resolves with a synced object:
+
 ```js
 {
     "boardTime": 0, // The time contained in the time sync set packet.
@@ -1073,13 +1135,13 @@ Apply the internal test signal to all channels.
 
 A String indicating which test signal to apply
 
- * `dc` - Connect to DC signal
- * `ground` - Connect to internal GND (VDD - VSS)
- * `pulse1xFast` - Connect to test signal 1x Amplitude, fast pulse
- * `pulse1xSlow` - Connect to test signal 1x Amplitude, slow pulse
- * `pulse2xFast` - Connect to test signal 2x Amplitude, fast pulse
- * `pulse2xSlow` - Connect to test signal 2x Amplitude, slow pulse
- * `none` - Reset to default
+- `dc` - Connect to DC signal
+- `ground` - Connect to internal GND (VDD - VSS)
+- `pulse1xFast` - Connect to test signal 1x Amplitude, fast pulse
+- `pulse1xSlow` - Connect to test signal 1x Amplitude, slow pulse
+- `pulse2xFast` - Connect to test signal 2x Amplitude, fast pulse
+- `pulse2xSlow` - Connect to test signal 2x Amplitude, slow pulse
+- `none` - Reset to default
 
 **_Returns_** a promise, if the commands were sent to write buffer.
 
@@ -1110,23 +1172,26 @@ Either a single character or an Array of characters
 **Example**
 
 Sends a single character command to the board.
+
 ```js
 // ourBoard has fulfilled the promise on .connect() and 'ready' has been observed previously
-ourBoard.write('a');
+ourBoard.write("a");
 ```
 
 Sends an array of bytes
+
 ```js
 // ourBoard has fulfilled the promise on .connect() and 'ready' has been observed previously
-ourBoard.write(['x','0','1','0','0','0','0','0','0','X']);
+ourBoard.write(["x", "0", "1", "0", "0", "0", "0", "0", "0", "X"]);
 ```
 
 Taking full advantage of the write queue. The following would be sent at t = 0, 10ms, 20ms, 30ms
+
 ```js
-ourBoard.write('t');
-ourBoard.write('a');
-ourBoard.write('c');
-ourBoard.write('o');
+ourBoard.write("t");
+ourBoard.write("a");
+ourBoard.write("c");
+ourBoard.write("o");
 ```
 
 ### <a name="event"></a> Events:
@@ -1141,7 +1206,7 @@ Emitted when a packet (or packets) are dropped. Returns an array.
 
 #### <a name="event-eot"></a> .on('eot', callback)
 
-Emitted when there is an EOT a.k.a. '$$$' with a buffer filled with the data.
+Emitted when there is an EOT a.k.a. '\$\$\$' with a buffer filled with the data.
 
 #### <a name="event-error"></a> .on('error', callback)
 
@@ -1178,8 +1243,9 @@ Emitted when there is a new sample available.
 ### <a name="constants"></a> Constants:
 
 To use the constants file simply:
+
 ```js
-const k = require('openbci-utilities').Constants;
+const k = require("openbci-utilities").Constants;
 
 console.log(k.OBCISimulatorPortName); // prints OpenBCISimulator to the console.
 ```
@@ -1192,14 +1258,14 @@ The name of the simulator port.
 
 ### <a name="interfacing-with-other-tools-labstreaminglayer"></a> LabStreamingLayer
 
-[LabStreamingLayer](https://github.com/sccn/labstreaminglayer) is a tool for streaming or recording time-series data. It can be used to interface with [Matlab](https://github.com/sccn/labstreaminglayer/tree/master/LSL/liblsl-Matlab), [Python](https://github.com/sccn/labstreaminglayer/tree/master/LSL/liblsl-Python), [Unity](https://github.com/xfleckx/LSL4Unity), and many other programs. 
+[LabStreamingLayer](https://github.com/sccn/labstreaminglayer) is a tool for streaming or recording time-series data. It can be used to interface with [Matlab](https://github.com/sccn/labstreaminglayer/tree/master/LSL/liblsl-Matlab), [Python](https://github.com/sccn/labstreaminglayer/tree/master/LSL/liblsl-Python), [Unity](https://github.com/xfleckx/LSL4Unity), and many other programs.
 
 To use LSL with the NodeJS SDK, go to our [labstreaminglayer example](https://github.com/OpenBCI/OpenBCI_NodeJS/tree/master/examples/labstreaminglayer), which contains code that is ready to start an LSL stream of OpenBCI data.
 
 Follow the directions in the [readme](https://github.com/OpenBCI/OpenBCI_NodeJS/blob/master/examples/labstreaminglayer/readme.md) to get started.
 
-
 ## <a name="developing"></a> Developing:
+
 ### <a name="developing-running"></a> Running:
 
 ```
@@ -1216,13 +1282,13 @@ npm test
 
 1. Fork it!
 2. Branch off of `development`: `git checkout development`
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Make changes
-4. If adding a feature, please add test coverage.
-5. Ensure tests all pass. (`npm test`)
-6. Commit your changes: `git commit -m 'Add some feature'`
-7. Push to the branch: `git push origin my-new-feature`
-8. Submit a pull request. Make sure it is based off of the `development` branch when submitting! :D
+3. Create your feature branch: `git checkout -b my-new-feature`
+4. Make changes
+5. If adding a feature, please add test coverage.
+6. Ensure tests all pass. (`npm test`)
+7. Commit your changes: `git commit -m 'Add some feature'`
+8. Push to the branch: `git push origin my-new-feature`
+9. Submit a pull request. Make sure it is based off of the `development` branch when submitting! :D
 
 ## <a name="license"></a> License:
 
@@ -1233,5 +1299,5 @@ MIT
 1. Ganglion integration (3.x)
 2. Compatible with node streams (3.x)
 3. Remove factory paradigm from main file (3.x)
-5. ES6/ES7 total adoption (3.x)
-4. Browser support (with browser serialport) (x.x)
+4. ES6/ES7 total adoption (3.x)
+5. Browser support (with browser serialport) (x.x)
