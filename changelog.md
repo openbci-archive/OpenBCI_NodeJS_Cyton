@@ -4,6 +4,10 @@
 
 - Name of package is now @openbci/cyton
 
+### Enhancements
+
+- Include node 10 in testing
+
 # 1.1.3
 
 ### Bug Fixes
