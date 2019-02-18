@@ -2,9 +2,9 @@
 const EventEmitter = require('events').EventEmitter;
 const util = require('util');
 const SerialPort = require('serialport');
-const OpenBCIUtilities = require('openbci-utilities');
-const obciUtils = require('openbci-utilities/dist/utilities');
-const k = require('openbci-utilities/dist/constants');
+const OpenBCIUtilities = require('@openbci/utilities');
+const obciUtils = require('@openbci/utilities/dist/utilities');
+const k = require('@openbci/utilities/dist/constants');
 const obciDebug = OpenBCIUtilities.debug;
 const OpenBCISimulator = require('./openBCISimulator');
 const Sntp = require('sntp');
@@ -977,7 +977,7 @@ Cyton.prototype.radioBaudRateSet = function (speed) {
       } else if (obciUtils.isSuccessInBuffer(data)) {
         // Change the sample rate here
         if (this.options.simulate === false) {
-          this.serial.update({baudRate: newBaudRateNum}, err => {
+          this.serial.update({ baudRate: newBaudRateNum }, err => {
             if (err) return reject(err);
             else resolve(newBaudRateNum);
           });

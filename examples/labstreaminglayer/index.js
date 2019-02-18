@@ -9,15 +9,15 @@
  *   do `npm install`
  *   then `npm start`
  */
-const portPub = "tcp://127.0.0.1:3004";
-const zmq = require("zmq-prebuilt");
-const socket = zmq.socket("pair");
+const portPub = 'tcp://127.0.0.1:3004';
+const zmq = require('zmq-prebuilt');
+const socket = zmq.socket('pair');
 const debug = false; // Pretty print any bytes in and out... it's amazing...
 const verbose = true; // Adds verbosity to functions
 
-const Cyton = require("@openbci/cyton");
+const Cyton = require('@openbci/cyton');
 let ourBoard = new Cyton({
-  simulatorFirmwareVersion: "v2",
+  simulatorFirmwareVersion: 'v2',
   debug: debug,
   verbose: verbose
 });
@@ -42,7 +42,7 @@ ourBoard.autoFindOpenBCIBoard().then(portName => {
         // Get the sample rate after 'ready'
         numChans = ourBoard.numberOfChannels();
         if (numChans === 16) {
-          ourBoard.overrideInfoForBoardType("daisy");
+          ourBoard.overrideInfoForBoardType('daisy');
         }
 
         // Find out if you can even time sync, you must be using v2 and this is only accurate after a `.softReset()` call which is called internally on `.connect()`. We parse the `.softReset()` response for the presence of firmware version 2 properties.
@@ -57,7 +57,7 @@ ourBoard.autoFindOpenBCIBoard().then(portName => {
             console.log(`stream start: ${err}`);
           });
         } else {
-          console.log("not able to time sync");
+          console.log('not able to time sync');
         }
       })
       .catch(err => {
@@ -65,7 +65,7 @@ ourBoard.autoFindOpenBCIBoard().then(portName => {
       });
   } else {
     /** Unable to auto find OpenBCI board */
-    console.log("Unable to auto find OpenBCI board");
+    console.log('Unable to auto find OpenBCI board');
   }
 });
 
@@ -90,8 +90,8 @@ const sampleFunc = sample => {
       console.log(`Bad time sync ${sample.timestamp}`);
     } else {
       sendToPython({
-        action: "process",
-        command: "sample",
+        action: 'process',
+        command: 'sample',
         message: sample
       });
     }
@@ -99,10 +99,10 @@ const sampleFunc = sample => {
 };
 
 // Subscribe to your functions
-ourBoard.on("sample", sampleFunc);
+ourBoard.on('sample', sampleFunc);
 
 // ZMQ
-socket.bind(portPub, function(err) {
+socket.bind(portPub, function (err) {
   if (err) throw err;
   console.log(`bound to ${portPub}`);
 });
@@ -122,14 +122,14 @@ const sendToPython = (interProcessObject, verbose) => {
   }
 };
 
-function exitHandler(options, err) {
+function exitHandler (options, err) {
   if (options.cleanup) {
-    if (verbose) console.log("clean");
+    if (verbose) console.log('clean');
     /** Do additional clean up here */
   }
   if (err) console.log(err.stack);
   if (options.exit) {
-    if (verbose) console.log("exit");
+    if (verbose) console.log('exit');
     ourBoard
       .disconnect()
       .then(() => {
@@ -142,20 +142,20 @@ function exitHandler(options, err) {
   }
 }
 
-if (process.platform === "win32") {
-  const rl = require("readline").createInterface({
+if (process.platform === 'win32') {
+  const rl = require('readline').createInterface({
     input: process.stdin,
     output: process.stdout
   });
 
-  rl.on("SIGINT", function() {
-    process.emit("SIGINT");
+  rl.on('SIGINT', function () {
+    process.emit('SIGINT');
   });
 }
 
 // do something when app is closing
 process.on(
-  "exit",
+  'exit',
   exitHandler.bind(null, {
     cleanup: true
   })
@@ -163,7 +163,7 @@ process.on(
 
 // catches ctrl+c event
 process.on(
-  "SIGINT",
+  'SIGINT',
   exitHandler.bind(null, {
     exit: true
   })
@@ -171,7 +171,7 @@ process.on(
 
 // catches uncaught exceptions
 process.on(
-  "uncaughtException",
+  'uncaughtException',
   exitHandler.bind(null, {
     exit: true
   })

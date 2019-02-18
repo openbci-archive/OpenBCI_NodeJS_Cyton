@@ -3,8 +3,8 @@ const EventEmitter = require('events').EventEmitter;
 const util = require('util');
 const stream = require('stream');
 
-const obciUtilities = require('openbci-utilities/dist/utilities');
-const k = require('openbci-utilities/dist/constants');
+const obciUtilities = require('@openbci/utilities/dist/utilities');
+const k = require('@openbci/utilities/dist/constants');
 const now = require('performance-now');
 const Buffer = require('safe-buffer').Buffer;
 

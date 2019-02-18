@@ -1,3 +1,9 @@
+# 2.0.1
+
+### Bug Fixes
+
+- Fixing references to openbci-utilities and openbci-cyton
+
 # 2.0.0
 
 ### Breaking Changes

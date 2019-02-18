@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/OpenBCI/OpenBCI_NodeJS_Cyton.svg?branch=master)](https://travis-ci.org/OpenBCI/OpenBCI_NodeJS_Cyton)
 [![codecov](https://codecov.io/gh/OpenBCI/OpenBCI_NodeJS_Cyton/branch/master/graph/badge.svg)](https://codecov.io/gh/OpenBCI/OpenBCI_NodeJS_Cyton)
 [![Dependency Status](https://david-dm.org/OpenBCI/OpenBCI_NodeJS_Cyton.svg)](https://david-dm.org/OpenBCI/OpenBCI_NodeJS_Cyton)
-[![npm](https://img.shields.io/npm/dm/openbci.svg?maxAge=2592000)](http://npmjs.com/package/openbci-cyton)
+[![npm](https://img.shields.io/npm/dm/openbci.svg?maxAge=2592000)](http://npmjs.com/package/@openbci/cyton)
 [![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square)](https://github.com/Flet/semistandard)
 
 # OpenBCI Node.js Cyton SDK
@@ -66,7 +66,7 @@ Get connected and [start streaming right now with the example code](examples/get
 #### Cyton (8 and 16 channel boards)
 
 ```ecmascript 6
-const Cyton = require('openbci-cyton');
+const Cyton = require('@openbci/cyton');
 const ourBoard = new Cyton();
 ourBoard.connect(portName) // Port name is a serial port name, see `.listPorts()`
   .then(() => {
@@ -108,7 +108,7 @@ Python researcher or developer? Check out how easy it is to [get access to the e
 Initializing the board:
 
 ```js
-const Cyton = require("openbci-cyton");
+const Cyton = require("@openbci/cyton");
 const ourBoard = new Cyton();
 ```
 
@@ -117,7 +117,7 @@ Go [checkout out the get streaming example](examples/getStreaming/getStreaming.j
 For initializing with options, such as verbose print outs:
 
 ```js
-const Cyton = require("openbci-cyton");
+const Cyton = require("@openbci/cyton");
 const ourBoard = new Cyton({
   verbose: true
 });
@@ -126,7 +126,7 @@ const ourBoard = new Cyton({
 Or if you don't have a board and want to use synthetic data:
 
 ```js
-const Cyton = require("openbci-cyton");
+const Cyton = require("@openbci/cyton");
 const ourBoard = new Cyton({
   simulate: true
 });
@@ -135,7 +135,7 @@ const ourBoard = new Cyton({
 Have a daisy?:
 
 ```js
-var Cyton = require("openbci-cyton");
+var Cyton = require("@openbci/cyton");
 var ourBoard = new Cyton({
   boardType: `daisy`,
   hardSet: true
@@ -147,8 +147,8 @@ Go [checkout out the get streaming with daisy example](examples/getStreamingDais
 Another useful way to start the simulator:
 
 ```js
-const Cyton = require("openbci-cyton");
-const k = require("openbci-utilities").Constants;
+const Cyton = require("@openbci/cyton");
+const k = require("@openbci/utilities").Constants;
 const ourBoard = new Cyton();
 ourBoard
   .connect(k.OBCISimulatorPortName) // This will set `simulate` to true
@@ -167,8 +167,8 @@ You can also start the simulator by sending [`.connect(portName)`](#method-conne
 or if you are using ES6:
 
 ```js
-import Cyton from "openbci-cyton";
-import { Constants } from "openbci-utilities";
+import Cyton from "@openbci/cyton";
+import { Constants } from "@openbci/utilities";
 const ourBoard = new Cyton();
 ourBoard.connect(Constants.OBCISimulatorPortName);
 ```
@@ -176,7 +176,7 @@ ourBoard.connect(Constants.OBCISimulatorPortName);
 To debug, it's amazing, do:
 
 ```js
-const Cyton = require("openbci-cyton");
+const Cyton = require("@openbci/cyton");
 const ourBoard = new Cyton({
   debug: true
 });
@@ -190,7 +190,7 @@ You MUST wait for the 'ready' event to be emitted before streaming/talking with 
 so installing the 'sample' listener and writing before the ready event might result in... nothing at all.
 
 ```js
-const Cyton = require("openbci-cyton");
+const Cyton = require("@openbci/cyton");
 const ourBoard = new Cyton();
 ourBoard
   .connect(portName)
@@ -225,7 +225,7 @@ The power of this module is in using the sample emitter, to be provided with sam
 4. Install the ['sample'](#event-sample) event emitter
 
 ```js
-const Cyton = require("openbci-cyton");
+const Cyton = require("@openbci/cyton");
 const ourBoard = new Cyton();
 ourBoard
   .connect(portName)
@@ -243,7 +243,7 @@ ourBoard
 Close the connection with [`.streamStop()`](#method-stream-stop) and disconnect with [`.disconnect()`](#method-disconnect)
 
 ```js
-const Cyton = require("openbci-cyton");
+const Cyton = require("@openbci/cyton");
 const ourBoard = new Cyton();
 ourBoard.streamStop().then(ourBoard.disconnect());
 ```
@@ -259,8 +259,8 @@ Keep your resync interval above 50ms. While it's important to resync every coupl
 Using local computer time:
 
 ```js
-const Cyton = require("openbci-cyton");
-const k = require("openbci-utilities").Constants;
+const Cyton = require("@openbci/cyton");
+const k = require("@openbci/utilities").Constants;
 const ourBoard = new Cyton({
   verbose: true
 });
@@ -328,7 +328,7 @@ You must have the OpenBCI board connected to the PC before trying to automatical
 If a port is not automatically found, then call [`.listPorts()`](#method-list-ports) to get a list of all serial ports this would be a good place to present a drop down picker list to the user, so they may manually select the serial port name.
 
 ```js
-const Cyton = require("openbci-cyton");
+const Cyton = require("@openbci/cyton");
 const ourBoard = new Cyton();
 ourBoard.autoFindOpenBCIBoard().then(portName => {
   if (portName) {
@@ -371,7 +371,7 @@ Where there are the same number of elements as channels and each element can be 
 Without further ado, here is an example:
 
 ```js
-const Cyton = require("openbci-cyton");
+const Cyton = require("@openbci/cyton");
 const ourBoard = new Cyton();
 ourBoard
   .connect(portName)
@@ -432,7 +432,7 @@ To run an impedance test on all inputs, one channel at a time:
 For example:
 
 ```js
-const Cyton = require('openbci-cyton');
+const Cyton = require('@openbci/cyton');
 const ourBoard = new Cyton();
 ourBoard.connect(portName).then(function(boardSerial) {
     ourBoard.streamStart();
@@ -657,7 +657,7 @@ A Number, specifies which channel you want to test.
 **Example**
 
 ```js
-const Cyton = require("openbci-cyton");
+const Cyton = require("@openbci/cyton");
 const ourBoard = new Cyton();
 ourBoard
   .connect(portName)
@@ -706,7 +706,7 @@ A Number, specifies which channel you want to test.
 **Example**
 
 ```js
-const Cyton = require("openbci-cyton");
+const Cyton = require("@openbci/cyton");
 const ourBoard = new Cyton();
 ourBoard
   .connect(portName)
@@ -755,7 +755,7 @@ A Number, specifies which channel you want to test.
 **Example**
 
 ```ecmascript 6
-const Cyton = require('openbci-cyton');
+const Cyton = require('@openbci/cyton');
 const ourBoard = new Cyton();
 ourBoard.connect(portName).then(() => {
     ourBoard.on('ready',() => {
@@ -1057,7 +1057,7 @@ Send the command to tell the board to start the syncing protocol. Must be connec
 Syncing multiple times to base the offset of the average of the four syncs.
 
 ```javascript
-const Cyton = require('openbci-cyton');
+const Cyton = require('@openbci/cyton');
 const ourBoard = new Cyton({
   verbose:true
 });
@@ -1245,7 +1245,7 @@ Emitted when there is a new sample available.
 To use the constants file simply:
 
 ```js
-const k = require("openbci-utilities").Constants;
+const k = require("@openbci/utilities").Constants;
 
 console.log(k.OBCISimulatorPortName); // prints OpenBCISimulator to the console.
 ```
