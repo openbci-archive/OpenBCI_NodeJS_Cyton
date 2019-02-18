@@ -13,7 +13,7 @@
 const stream = true;
 const debug = true; // Pretty print any bytes in and out... it's amazing...
 const verbose = true; // Adds verbosity to functions
-const Cyton = require("../../openBCICyton");
+const Cyton = require('../../openBCICyton');
 
 let ourBoard = new Cyton({
   debug: debug,
@@ -38,7 +38,7 @@ ourBoard.autoFindOpenBCIBoard().then(portName => {
       });
   } else {
     /** Unable to auto find OpenBCI board */
-    console.log("Unable to auto find OpenBCI board");
+    console.log('Unable to auto find OpenBCI board');
   }
 });
 
@@ -62,18 +62,18 @@ var sampleFunc = sample => {
 };
 
 // Subscribe to your functions
-ourBoard.on("ready", readyFunc);
-ourBoard.on("sample", sampleFunc);
+ourBoard.on('ready', readyFunc);
+ourBoard.on('sample', sampleFunc);
 
-function exitHandler(options, err) {
+function exitHandler (options, err) {
   if (options.cleanup) {
-    if (verbose) console.log("clean");
+    if (verbose) console.log('clean');
     ourBoard.removeAllListeners();
     /** Do additional clean up here */
   }
   if (err) console.log(err.stack);
   if (options.exit) {
-    if (verbose) console.log("exit");
+    if (verbose) console.log('exit');
     if (stream) {
       ourBoard.streamStop().catch(console.log);
     }
@@ -81,20 +81,20 @@ function exitHandler(options, err) {
   }
 }
 
-if (process.platform === "win32") {
-  const rl = require("readline").createInterface({
+if (process.platform === 'win32') {
+  const rl = require('readline').createInterface({
     input: process.stdin,
     output: process.stdout
   });
 
-  rl.on("SIGINT", function() {
-    process.emit("SIGINT");
+  rl.on('SIGINT', function () {
+    process.emit('SIGINT');
   });
 }
 
 // do something when app is closing
 process.on(
-  "exit",
+  'exit',
   exitHandler.bind(null, {
     cleanup: true
   })
@@ -102,7 +102,7 @@ process.on(
 
 // catches ctrl+c event
 process.on(
-  "SIGINT",
+  'SIGINT',
   exitHandler.bind(null, {
     exit: true
   })
@@ -110,7 +110,7 @@ process.on(
 
 // catches uncaught exceptions
 process.on(
-  "uncaughtException",
+  'uncaughtException',
   exitHandler.bind(null, {
     exit: true
   })

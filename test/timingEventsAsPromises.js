@@ -104,5 +104,5 @@ instrumentTimingEvents(global, 'setImmediate');
 // the next call to the passed function should not be promisified
 // may be queued multiple times
 exports.ignoreOnce = (ignored) => {
-  ignored._ignoreCount ++;
+  ignored._ignoreCount++;
 };

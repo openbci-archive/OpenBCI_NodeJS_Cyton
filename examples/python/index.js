@@ -127,7 +127,7 @@ var receiveFromPython = (rawData) => {
 socket.on('message', receiveFromPython);
 
 const sendStatus = () => {
-  sendToPython({'action': 'active', 'message': 'ready', 'command': 'status'}, true);
+  sendToPython({ 'action': 'active', 'message': 'ready', 'command': 'status' }, true);
 };
 
 sendStatus();

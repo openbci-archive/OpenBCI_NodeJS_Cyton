@@ -977,7 +977,7 @@ Cyton.prototype.radioBaudRateSet = function (speed) {
       } else if (obciUtils.isSuccessInBuffer(data)) {
         // Change the sample rate here
         if (this.options.simulate === false) {
-          this.serial.update({baudRate: newBaudRateNum}, err => {
+          this.serial.update({ baudRate: newBaudRateNum }, err => {
             if (err) return reject(err);
             else resolve(newBaudRateNum);
           });
