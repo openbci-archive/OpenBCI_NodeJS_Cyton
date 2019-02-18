@@ -148,7 +148,7 @@ Another useful way to start the simulator:
 
 ```js
 const Cyton = require("@openbci/cyton");
-const k = require("@openbci/utilities").Constants;
+const k = require("@openbci/utilities").constants;
 const ourBoard = new Cyton();
 ourBoard
   .connect(k.OBCISimulatorPortName) // This will set `simulate` to true
@@ -168,9 +168,9 @@ or if you are using ES6:
 
 ```js
 import Cyton from "@openbci/cyton";
-import { Constants } from "@openbci/utilities";
+import { constants } from "@openbci/utilities";
 const ourBoard = new Cyton();
-ourBoard.connect(Constants.OBCISimulatorPortName);
+ourBoard.connect(constants.OBCISimulatorPortName);
 ```
 
 To debug, it's amazing, do:
@@ -260,7 +260,7 @@ Using local computer time:
 
 ```js
 const Cyton = require("@openbci/cyton");
-const k = require("@openbci/utilities").Constants;
+const k = require("@openbci/utilities").constants;
 const ourBoard = new Cyton({
   verbose: true
 });
@@ -1245,7 +1245,7 @@ Emitted when there is a new sample available.
 To use the constants file simply:
 
 ```js
-const k = require("@openbci/utilities").Constants;
+const k = require("@openbci/utilities").constants;
 
 console.log(k.OBCISimulatorPortName); // prints OpenBCISimulator to the console.
 ```
