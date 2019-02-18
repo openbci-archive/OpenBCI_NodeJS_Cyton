@@ -3,8 +3,8 @@ const bluebirdChecks = require('./bluebirdChecks');
 const chai = require('chai');
 const should = chai.should(); // eslint-disable-line no-unused-vars
 const OpenBCICyton = require('../openBCICyton');
-const openBCIUtilities = require('openbci-utilities/dist/utilities');
-const k = require('openbci-utilities/dist/constants');
+const openBCIUtilities = require('@openbci/utilities/dist/utilities');
+const k = require('@openbci/utilities/dist/constants');
 
 const chaiAsPromised = require('chai-as-promised');
 const sinonChai = require('sinon-chai');

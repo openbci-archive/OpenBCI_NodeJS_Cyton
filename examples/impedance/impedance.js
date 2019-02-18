@@ -18,7 +18,7 @@ let ourBoard = new Cyton({
   verbose: verbose
 });
 
-const k = require('openbci-utilities').Constants;
+const k = require('@openbci/utilities').Constants;
 
 let startedImpedance = false;
 let iBuffer = [];
