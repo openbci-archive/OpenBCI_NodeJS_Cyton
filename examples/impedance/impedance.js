@@ -12,13 +12,13 @@
 const debug = false; // Pretty print any bytes in and out... it's amazing...
 const verbose = true; // Adds verbosity to functions
 
-const Cyton = require('openbci').Cyton;
+const Cyton = require('@openbci/cyton');
 let ourBoard = new Cyton({
   debug: debug,
   verbose: verbose
 });
 
-const k = require('@openbci/utilities').Constants;
+const k = require('@openbci/utilities').constants;
 
 let startedImpedance = false;
 let iBuffer = [];
